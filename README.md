@@ -1,6 +1,71 @@
 # unitree_sdk2_python
 Python interface for unitree sdk2
 
+---
+
+# Krumi Lab Setup
+
+## Purpose
+H1-2 humanoid robot control with Inspire RH56DFTP dexterous hands for manipulation research.
+
+## Environment
+- Conda environment: `-`
+- Robot network interface: `enp128s31f6`
+- Robot: Unitree H1-2 humanoid (27-DOF body + Inspire RH56DFTP hands)
+- This SDK: `~/mj_ws/Krumi_python_sdk_unitree`
+- Inspire hand SDK: `~/mj_ws/z_unitree_official/inspire_hand_ws`
+
+## Quick Start
+
+### 1. Activate environment
+```bash
+conda activate rical_unitree
+```
+
+### 2. Start the Inspire hand driver (your PC, Terminal 1)
+```bash
+cd ~/mj_ws/z_unitree_official/inspire_hand_ws
+python inspire_hand_sdk/example/Headless_driver_485_double.py
+```
+Verify the hand topics appear before proceeding:
+```bash
+ddsls -a | grep inspire_hand
+# should show rt/inspire_hand/state/r and rt/inspire_hand/ctrl/r
+```
+
+### 3. Run the H1-2 + hand example (your PC, Terminal 2)
+```bash
+cd ~/mj_ws/Krumi_python_sdk_unitree
+conda activate rical_unitree
+
+# Open hands, elbows to -1.0 rad
+python example/h1_2/hand_test.py enp128s31f6 --elbow-angle -1.0 --hand-pos 0
+
+# Close hands
+python example/h1_2/hand_test.py enp128s31f6 --elbow-angle -1.0 --hand-pos 1000
+```
+
+## Inspire Hand Interface
+| Topic | Direction | Type | Description |
+|---|---|---|---|
+| `rt/inspire_hand/ctrl/r` | Publish | `inspire::inspire_hand_ctrl` | Right hand command |
+| `rt/inspire_hand/ctrl/l` | Publish | `inspire::inspire_hand_ctrl` | Left hand command |
+| `rt/inspire_hand/state/r` | Subscribe | `inspire::inspire_hand_state` | Right hand state |
+| `rt/inspire_hand/state/l` | Subscribe | `inspire::inspire_hand_state` | Left hand state |
+
+Joint order (6 per hand): `pinky, ring, middle, index, thumb-bend, thumb-rotation`
+Position range: `0` = open, `1000` = closed. Use `mode=2` for position control.
+
+## Body Interface (H1-2)
+| Topic | Direction | Type |
+|---|---|---|
+| `rt/lowcmd` | Publish | `unitree_hg::msg::dds_::LowCmd_` |
+| `rt/lowstate` | Subscribe | `unitree_hg::msg::dds_::LowState_` |
+
+See [MANUAL.md](MANUAL.md) for full hand activation reference.
+
+---
+
 # Installation
 ## Dependencies
 - Python >= 3.8

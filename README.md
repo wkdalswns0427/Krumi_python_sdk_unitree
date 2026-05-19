@@ -46,15 +46,18 @@ python example/h1_2/hand_test.py enp128s31f6 --elbow-angle -1.0 --hand-pos 1000
 ```
 
 ## Inspire Hand Interface
-| Topic | Direction | Type | Description |
-|---|---|---|---|
-| `rt/inspire_hand/ctrl/r` | Publish | `inspire::inspire_hand_ctrl` | Right hand command |
-| `rt/inspire_hand/ctrl/l` | Publish | `inspire::inspire_hand_ctrl` | Left hand command |
-| `rt/inspire_hand/state/r` | Subscribe | `inspire::inspire_hand_state` | Right hand state |
-| `rt/inspire_hand/state/l` | Subscribe | `inspire::inspire_hand_state` | Left hand state |
+Verified against `unitree_sim_isaaclab/dds/inspire_dds.py`.
 
-Joint order (6 per hand): `pinky, ring, middle, index, thumb-bend, thumb-rotation`
-Position range: `0` = open, `1000` = closed. Use `mode=2` for position control.
+| Topic | Direction | Type |
+|---|---|---|
+| `rt/inspire/cmd` | Publish | `unitree_go::msg::dds_::MotorCmds_` |
+| `rt/inspire/state` | Subscribe | `unitree_go::msg::dds_::MotorStates_` |
+
+One combined message holds 12 motors:
+- Right hand `[0..5]`: pinky, ring, middle, index, thumb-bend, thumb-rotation
+- Left  hand `[6..11]`: pinky, ring, middle, index, thumb-bend, thumb-rotation
+
+`q` is normalized — `1.0` = open, `0.0` = closed. Bridge service on the robot maps this to physical joint ranges.
 
 ## Body Interface (H1-2)
 | Topic | Direction | Type |

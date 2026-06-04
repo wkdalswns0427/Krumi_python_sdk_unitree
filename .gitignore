@@ -8,7 +8,7 @@ Thumbs.db
 *.app
 *.exe
 *.war
-
+*.pt
 # Large media files
 *.mp4
 *.tiff

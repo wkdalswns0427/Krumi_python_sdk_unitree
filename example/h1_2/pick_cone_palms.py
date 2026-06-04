@@ -130,14 +130,15 @@ POSE_SQUEEZE = [
      0.0,
 ]
 
-# POSE_HOLD: arms retracted toward the chest, used while the body is at
-# full standing height. H1-2 has no waist-pitch joint, so the only way to
-# keep the CoM over the feet while standing tall is to pull the held cone
-# closer to the body. Shoulder pitch less negative (arm more vertical),
-# elbow bent harder (forearm folds back), shoulder-roll squeeze preserved.
+# POSE_HOLD: arms tucked tight to the chest while the body is at full
+# standing height. H1-2 has no waist-pitch joint, so the only way to keep
+# the CoM over the feet while standing tall is to pull the held cone hard
+# in toward the body. Upper arm nearly vertical (small shoulder pitch),
+# elbow flexed close to its limit (~90° flex on this unit), shoulder-roll
+# squeeze preserved.
 POSE_HOLD = [
-    -0.80 * SCALE,  SQUEEZE_ROLL_MAG * SCALE, 0.0, 0.20, 0.0, 0.0, 0.0,
-    -0.80 * SCALE, -SQUEEZE_ROLL_MAG * SCALE, 0.0, 0.20, 0.0, 0.0, 0.0,
+    -0.50 * SCALE,  SQUEEZE_ROLL_MAG * SCALE, 0.0, 0.10, 0.0, 0.0, 0.0,
+    -0.50 * SCALE, -SQUEEZE_ROLL_MAG * SCALE, 0.0, 0.10, 0.0, 0.0, 0.0,
      0.0,
 ]
 
@@ -146,7 +147,7 @@ POSE_HOLD = [
 # Meters (float). Matches the verified C++ behavior in h1_2_hl_pose3.cpp:
 # read current stand height with GetStandHeight, ramp it with SetStandHeight
 # in metres at ~10 Hz while keeping the arm_sdk publisher pumping at 50 Hz.
-KNEEL_DROP             = 0.16   # m — deep squat (past verified C++ 0.15)
+KNEEL_DROP             = 0.18   # m — deeper squat (past verified C++ 0.15)
 DEFAULT_STAND_FALLBACK = 1.00   # m — used only if GetStandHeight fails
 
 

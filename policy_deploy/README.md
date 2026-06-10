@@ -5,16 +5,48 @@ Real-robot deployment scripts for RL policies trained in
 
 ```
 policy_deploy/
-├── h12_joint_map.py        # SDK index ↔ training joint name; gains; defaults
-├── damping_test.py         # safety bring-up (run FIRST every session)
-├── deploy_legonly.py       # Isaac-H12-Velocity-Legonly-v0 deploy loop
+├── h12_joint_map.py            # SDK index ↔ training joint name; gains; defaults
+├── damping_test.py             # safety bring-up (run FIRST every session)
+├── deploy_legonly.py           # Real-robot deploy via Unitree SDK
+├── mujoco_deploy_legonly.py    # Sim-to-sim validator in MuJoCo (no hardware needed)
 ├── policies/
 │   ├── legonly_locomotion/
-│   │   ├── policy.pt       # TorchScript-exported actor MLP (51 → 13)
+│   │   ├── policy.pt           # TorchScript-exported actor MLP (51 → 13)
 │   │   └── policy.onnx
-│   └── squat/              # reserved
+│   └── squat/                  # reserved
 └── README.md
 ```
+
+## Sim-to-sim validation in MuJoCo (no robot needed)
+
+`mujoco_deploy_legonly.py` runs the same `policy.pt` against a MuJoCo
+H1-2 model.  Same 51→13 contract, same PD gains, same training-time
+torque limits — just MuJoCo instead of IsaacLab as the physics backend.
+Useful for sanity-checking the policy before any real-robot run and as a
+sim-to-real proxy (IsaacLab → MuJoCo → real follows the same gap pattern).
+
+```bash
+# Default: MJCF at /home/mchang344/mj_ws/assets/h1_2_description/h1_2.xml,
+# Legonly checkpoint at policies/legonly_locomotion/policy.pt, viewer ON.
+python3 mujoco_deploy_legonly.py --cmd_vx 0.5
+
+# Headless (no viewer, just per-second [mujoco] log lines)
+python3 mujoco_deploy_legonly.py --cmd_vx 0.5 --no_viewer --duration 20
+
+# Other MJCF or policy
+python3 mujoco_deploy_legonly.py --mjcf /path/to/h1_2.xml \
+    --policy /path/to/different_policy.pt --cmd_vx 0.3
+```
+
+Expected: pelvis_z stays ≈ 1.0, |v_xy| converges toward cmd_vx within a
+few seconds.  Same caveats apply as the IsaacLab `scene/joint_motion.py`
+validator — the Legonly policy was trained with `rel_standing_envs=0.0`
+so `cmd_vx=0` is not a stable equilibrium and will eventually wander.
+
+If MuJoCo and IsaacLab disagree (e.g. walks in one, falls in the other),
+the diff isolates the bug to the physics gap — actuator integration
+scheme, contact solver tolerance, or armature/effort-limit authoring.
+Both deploy scripts read identical gains/defaults from `h12_joint_map.py`.
 
 ## Prerequisites
 

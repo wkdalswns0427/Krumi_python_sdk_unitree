@@ -21,11 +21,14 @@ outputs default into a `b2g/` folder next to the input data.
 | `bag_to_video.py` | rosbag color/depth stream -> mp4 for review |
 | `diagnose_tail.py` | explain worst mono-vs-rgbd errors (depth bleed forensics) |
 | `depth_policy_matrix.py` | one MediaPipe pass, all depth policies, coverage vs error |
+| `retarget_arm.py` | joints CSV -> 50 Hz H1-2 arm trajectory (Block 2 input) |
+| `replay_arm.py` | trajectory -> rt/arm_sdk overlay player (unitree_sdk2py) |
+| `sdk_replay_logger.py` | cmd/exe logger over raw DDS; fallback for the ROS2 logger |
 
-Superseded here, canonical versions in `~/mj_ws/h1-2_sensors/yolo_ws/src/h12_experiments/`:
-`replay_logger.py` (ROS2 node), FK (`fk_h12.py`), `success_check.py`.
-`latency_logger.py` remains the skeleton for the not-yet-built real-time
-retarget node (Blocks 2/3).
+Canonical in `~/mj_ws/h1-2_sensors/yolo_ws/src/h12_experiments/`:
+`replay_logger.py` (ROS2 node, backup logging path), FK (`fk_h12.py`),
+`success_check.py`. `latency_logger.py` remains the skeleton for the
+not-yet-built real-time retarget node (Blocks 2/3).
 
 ## Capture sources
 
@@ -56,8 +59,8 @@ unenforced jump statistics when a capture needs investigating.
 
 ```bash
 conda deactivate
-cd ~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments
-D=iphone_data/M1_R_1   # one capture dir per rep
+cd ~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/scripts
+D=../iphone_data/M1_R_1   # one capture dir per rep (data root is one level up)
 /usr/bin/python3 bag_to_joints.py $D --mode mono --stride 2 --out $D/b2g/iph_mono.csv
 /usr/bin/python3 bag_to_joints.py $D --mode rgbd --stride 2 --out $D/b2g/iph_rgbd.csv
 /usr/bin/python3 block1_compare.py $D/b2g/iph_mono.csv $D/b2g/iph_rgbd.csv \
@@ -65,7 +68,7 @@ D=iphone_data/M1_R_1   # one capture dir per rep
 ```
 
 Use the same `--stride` for mono and rgbd (frame indices are inner-joined).
-Subject/device/capture metadata: `iphone_data/metadata.yaml` (capture `role:`
+Subject/device/capture metadata: `../iphone_data/metadata.yaml` (capture `role:`
 marks tuning vs evaluation clips).
 
 ### Alignment: mono and rgbd are in DIFFERENT frames
@@ -123,10 +126,48 @@ RULA 1-2 -> 1 Acceptable, 3-4 -> 2 Investigate, 5-6 -> 3 Change soon,
 
 ### Blocks 2/3
 
-Replay CSV (cmd/exe/err per joint at 50 Hz) is written by the ROS2
-`replay_logger` and consumed by `success_check.py` (FK from the URDF), both
-in the h12_experiments package. Latency CSV (`t0..t3` per frame) comes from
-the retarget node once it exists; `latency_logger.py` holds its skeleton.
+Replay CSV (cmd/exe/err per joint at 50 Hz) is consumed by
+`success_check.py` (FK from the URDF) in the h12_experiments package. Two
+writers produce the identical format: the ROS2 `replay_logger` node and
+`sdk_replay_logger.py` here (raw DDS via unitree_sdk2py, same stack as
+`replay_arm.py`). Both are verified; the SDK logger is the primary (same
+conda env and `--interface` flag as the replayer), and both abort early if
+no lowstate arrives instead of logging NaN silently.
+
+Lesson from the 2026-07-13 bring-up (two all-NaN trial logs): ROS2
+prepends `rt/` to every topic name when mapping to DDS, so a ROS2 node
+must subscribe to `lowstate` / `arm_sdk` to reach the robot's raw DDS
+topics `rt/lowstate` / `rt/arm_sdk`; subscribing to `rt/lowstate` from
+ROS2 listens on DDS `rt/rt/lowstate`, which nobody publishes. This is why
+the official unitree_ros2 examples use `/lowstate`, `/arm_sdk`, `/lowcmd`.
+
+`replay_arm.py --gravity-ff` (added 2026-07-13): the pilot M1 T1 failed
+`success_check` at 12.35 cm mean EE, diagnosed as gravity sag (shoulder
+error 97% one-signed, ~10 deg even at static holds, because the overlay
+sent `tau=0` with `kp=80`). The flag adds a URDF-based gravity feedforward
+`tau = dU/dq` (`GravityFF`, capped per joint, faded with the overlay
+weight, `--gravity-gain` default 1.0). Sign and magnitude were validated
+against the pilot log: model torque vs measured `kp*err` at static holds
+correlate +0.95/+0.97 with the same sign, so the feedforward lifts rather
+than doubles the sag. Predicted residual: gain 1.0 -> ~4 cm EE (should
+pass 5 cm), gain ~1.4 -> ~1.5 cm. Start on the robot at gain 1.0.
+
+Latency CSV (`t0..t3` per frame) comes from the retarget node once it
+exists; `latency_logger.py` holds its skeleton.
+
+`retarget_arm.py` input conditioning (added 2026-07-13 after the first
+robot replay showed the raised-but-static left arm flapping): mono
+MediaPipe depth (z) is the noisy axis, on M1_R_1 the static left wrist
+measured 2.0 / 2.8 / 11.6 cm std in x / y / z with the z oscillation
+phase-locked to the right-arm hammer strikes. Conditioning: median-5 +
+zero-phase low-pass on every keypoint's z (`--z-cutoff` 0.8 Hz), a
+dt-aware teleport gate on limb directions (`--max-dir-rate` 600 deg/s,
+re-lock after `--relock` 5), a One-Euro filter on the directions
+(`--euro-min-cutoff` 1.0, `--euro-beta` 0.5) and a zero-phase Butterworth
+on the output joints (`--lp-cutoff` 3 Hz; direction-space spectrum shows
+real motion incl. the hammer whip is < 3 Hz). M1_R_1 effect: left-arm
+mean |vel| 53 -> 24 deg/s, velocity reversals 4.9 -> 1.5 /s, right-arm
+strike rhythm preserved (peaks 8.3 -> 5.8 rad/s).
 
 ## Self-tests (no hardware, no capture)
 
@@ -135,4 +176,7 @@ the retarget node once it exists; `latency_logger.py` holds its skeleton.
 /usr/bin/python3 block1_compare.py --demo
 /usr/bin/python3 rula_reba_agreement.py --demo
 /usr/bin/python3 -m pytest test_angles.py -q
+/usr/bin/python3 replay_arm.py TRAJ.csv --dry-run
+# real DDS round-trip on loopback (conda env with unitree_sdk2py):
+python3 sdk_replay_logger.py --self-test
 ```

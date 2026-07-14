@@ -21,8 +21,20 @@ Method (scope-frozen: no new IK claim, geometric direction matching):
    criterion logs this counter).
 5. URDF joint limits clamped and counted. Wrists and waist stay at zero
    (protocol scope).
-6. Undetected frames are gap-interpolated, the series is resampled to the
-   output rate and smoothed with a small moving average.
+6. Input conditioning (added 2026-07-13 after the first robot replay showed
+   the quasi-static left arm shaking): a dt-aware teleport gate rejects
+   frames whose limb direction rotates faster than --max-dir-rate relative
+   to the last accepted frame (MediaPipe keypoint teleports, re-lock after
+   --relock consecutive rejections, same pattern as the frozen depth
+   policy), then a One-Euro filter on the direction vectors kills the
+   static-pose jitter while letting the fast hammer whip through
+   (velocity-adaptive cutoff). Both are counted and printed.
+7. Undetected frames are gap-interpolated, the series is resampled to the
+   output rate and low-pass filtered with a zero-phase Butterworth
+   (--lp-cutoff, offline so no lag; spectral evidence from M1_R_1: real
+   motion incl. the hammer whip is < 3 Hz in direction space, the shake is
+   the 3-15 Hz band). --smooth-window moving average retained as a final
+   polish.
 
 Output CSV: t_s + the 15 arm/waist joints in h12_experiments joints order
 (left arm 7, right arm 7, waist_yaw). Stats printed: IK residuals, yaw
@@ -106,12 +118,54 @@ def _unit(v):
     return None if n < 1e-9 else v / n
 
 
-def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw):
+class OneEuro:
+    """One-Euro filter (Casiez 2012) over an N-dim signal.
+
+    Cutoff = min_cutoff + beta * |dx/dt|: heavy smoothing while the signal
+    is slow (static-pose jitter), little smoothing when it moves fast (the
+    hammer whip passes through). Pure numpy, dt-aware for gapped frames.
+    """
+
+    def __init__(self, min_cutoff, beta, d_cutoff=1.0):
+        self.min_cutoff, self.beta, self.d_cutoff = min_cutoff, beta, d_cutoff
+        self.x = self.dx = self.t = None
+
+    @staticmethod
+    def _alpha(cutoff, dt):
+        tau = 1.0 / (2 * np.pi * cutoff)
+        return 1.0 / (1.0 + tau / dt)
+
+    def __call__(self, x, t):
+        x = np.asarray(x, dtype=float)
+        if self.x is None:
+            self.x, self.dx, self.t = x.copy(), np.zeros_like(x), t
+            return x.copy()
+        dt = max(t - self.t, 1e-6)
+        self.t = t
+        dx = (x - self.x) / dt
+        a_d = self._alpha(self.d_cutoff, dt)
+        self.dx = a_d * dx + (1 - a_d) * self.dx
+        cutoff = self.min_cutoff + self.beta * float(np.linalg.norm(self.dx))
+        a = self._alpha(cutoff, dt)
+        self.x = a * x + (1 - a) * self.x
+        return self.x.copy()
+
+
+def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw, yaw_reg=0.0):
     """Damped Gauss-Newton: match both limb segment directions.
 
     Returns (q4, residual_deg, clamped_flags). suppress_yaw freezes q[2].
+
+    yaw_reg > 0 adds a quadratic continuity penalty yaw_reg*(q[2]-yaw_ref)^2
+    on shoulder yaw ONLY (index 2), with yaw_ref = the previous accepted
+    frame's yaw (q_prev[2]). Shoulder yaw is the sole DOF whose direction
+    residual gradient goes shallow on forward-reaching poses (M2/M3), where
+    the warm-started solver otherwise hops to the far solution branch; the
+    penalty breaks that tie toward continuity without touching the
+    observable DOFs (pitch/roll/elbow get no penalty term).
     """
     q = np.array(q_prev, dtype=float)
+    yaw_ref = float(q_prev[2])
     lo = np.array([l for l, _ in limits4])
     hi = np.array([h for _, h in limits4])
     clamped = np.zeros(4, dtype=bool)
@@ -140,7 +194,11 @@ def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw):
                 continue
             J[:, k] = (rp - r) / eps
         JtJ = J.T @ J + 1e-2 * np.eye(4)
-        dq = np.linalg.solve(JtJ, -J.T @ r)
+        rhs = -J.T @ r
+        if yaw_reg > 0 and not suppress_yaw:
+            JtJ[2, 2] += yaw_reg                     # penalty Hessian
+            rhs[2] -= yaw_reg * (q[2] - yaw_ref)     # penalty gradient
+        dq = np.linalg.solve(JtJ, rhs)
         if suppress_yaw:
             dq[2] = 0.0
         q = q + dq
@@ -160,6 +218,36 @@ def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw):
 
 
 # ── Human side ───────────────────────────────────────────────────────────────
+def filter_depth_axis(frames, fps, cutoff_hz):
+    """Median-5 + zero-phase low-pass on the z (depth) of every joint.
+
+    MediaPipe mono depth is the weak axis: on M1_R_1 the raised-but-static
+    left wrist measured 2.0 / 2.8 / 11.6 cm std in x / y / z during the
+    hammering phase, the z oscillation phase-locked to the right-arm
+    strikes (model crosstalk). Real image-plane motion is untouched; only
+    z is conditioned. Runs before the torso frame is built, so shoulder /
+    hip depth noise stops rocking the torso frame too.
+    """
+    from scipy.signal import butter, filtfilt, medfilt
+    joints = {j for f in frames.values() for j in f}
+    for j in joints:
+        fis = [fi for fi in sorted(frames) if j in frames[fi]]
+        if len(fis) < 16:
+            continue
+        t = np.array([fi / fps for fi in fis])
+        z = np.array([frames[fi][j][2] for fi in fis])
+        # uniform grid at the median input rate for the IIR filter
+        dt = float(np.median(np.diff(t)))
+        tu = np.arange(t[0], t[-1] + dt / 2, dt)
+        zu = np.interp(tu, t, z)
+        zu = medfilt(zu, 5)                    # isolated teleports
+        b, a = butter(2, min(cutoff_hz * 2 * dt, 0.99))
+        zu = filtfilt(b, a, zu)
+        zf = np.interp(t, tu, zu)
+        for fi, v in zip(fis, zf):
+            frames[fi][j][2] = v
+
+
 def load_joints_csv(path, conf_min):
     """{frame: {joint: np.array(xyz)}} keeping joints with conf >= conf_min."""
     frames = {}
@@ -222,6 +310,33 @@ def main():
                    help="moving-average window on the output series (odd, "
                         "default 7 = 0.14 s at 50 Hz; 1 disables)")
     p.add_argument("--straight-arm-deg", type=float, default=STRAIGHT_ARM_DEG)
+    p.add_argument("--max-dir-rate", type=float, default=600.0,
+                   help="teleport gate: reject a frame whose limb direction "
+                        "rotates faster than this vs the last accepted frame "
+                        "(deg/s; real hammer whip peaks ~460; 0 disables)")
+    p.add_argument("--relock", type=int, default=5,
+                   help="accept unconditionally after this many consecutive "
+                        "gate rejections (the arm really moved)")
+    p.add_argument("--euro-min-cutoff", type=float, default=1.0,
+                   help="One-Euro static cutoff Hz on limb directions "
+                        "(default 1.0; 0 disables the filter)")
+    p.add_argument("--euro-beta", type=float, default=0.5,
+                   help="One-Euro speed coefficient (cutoff rises by "
+                        "beta * |d dir/dt|, so fast motion passes)")
+    p.add_argument("--lp-cutoff", type=float, default=3.0,
+                   help="zero-phase Butterworth low-pass on the output "
+                        "joint series, Hz (default 3.0; 0 disables)")
+    p.add_argument("--z-cutoff", type=float, default=0.8,
+                   help="zero-phase low-pass on the keypoint DEPTH axis "
+                        "before retargeting, Hz (mono z is the noisy axis; "
+                        "default 0.8; 0 disables)")
+    p.add_argument("--yaw-reg", type=float, default=0.0,
+                   help="shoulder-yaw continuity penalty weight in the IK "
+                        "(quadratic pull toward the previous frame's yaw; "
+                        "0 = off. Suppresses solution-branch flips on "
+                        "forward-reaching motions M2/M3; sweep to pick the "
+                        "smallest weight that kills flips without raising the "
+                        "direction residual)")
     args = p.parse_args()
 
     if not os.path.isfile(args.joints_csv):
@@ -235,6 +350,8 @@ def main():
     frames = load_joints_csv(args.joints_csv, args.conf_min)
     if not frames:
         sys.exit("no usable frames in the joints CSV")
+    if args.z_cutoff > 0:
+        filter_depth_axis(frames, args.fps, args.z_cutoff)
     idxs = sorted(frames)
     limits = load_limits(args.urdf)
     fks = {s: ArmChainFK(args.urdf, s) for s in SIDES}
@@ -245,13 +362,23 @@ def main():
     t_in, q_in = [], []                       # q_in rows: 8 values (L4 + R4)
     q_prev = {s: np.array([0.0, 0.15 if s == "left" else -0.15, 0.0, 0.3])
               for s in SIDES}
-    stats = {s: dict(solved=0, skipped=0, suppress=0, res=[], clamp=np.zeros(4))
+    stats = {s: dict(solved=0, skipped=0, gated=0, suppress=0, res=[],
+                     ee=[], clamp=np.zeros(4))
              for s in SIDES}
+    last_dir = {s: None for s in SIDES}       # (t, u_hat, f_hat) accepted
+    rejects = {s: 0 for s in SIDES}
+    euro = {s: (OneEuro(args.euro_min_cutoff, args.euro_beta)
+                if args.euro_min_cutoff > 0 else None) for s in SIDES}
+
+    def dir_rate_deg(a, b, dt):
+        return np.degrees(np.arccos(np.clip(np.dot(a, b), -1, 1))) / dt
+
     for fi in idxs:
         j = frames[fi]
         R = torso_frame(j)
         if R is None:
             continue
+        t_now = fi / args.fps
         row = np.full(8, np.nan)
         for si, s in enumerate(SIDES):
             d = arm_directions(j, R, s)
@@ -259,17 +386,46 @@ def main():
             if d is None:
                 st["skipped"] += 1
                 continue
-            u_hat, f_hat, flex = d
+            u_hat, f_hat, _ = d
+
+            # teleport gate vs the last ACCEPTED directions (dt-aware)
+            if args.max_dir_rate > 0 and last_dir[s] is not None:
+                t_ref, u_ref, f_ref = last_dir[s]
+                dt = max(t_now - t_ref, 1e-6)
+                rate = max(dir_rate_deg(u_hat, u_ref, dt),
+                           dir_rate_deg(f_hat, f_ref, dt))
+                if rate > args.max_dir_rate and rejects[s] < args.relock:
+                    rejects[s] += 1
+                    st["gated"] += 1
+                    continue
+            rejects[s] = 0
+            last_dir[s] = (t_now, u_hat, f_hat)
+
+            # One-Euro on the direction components, renormalized
+            if euro[s] is not None:
+                filt = euro[s](np.concatenate([u_hat, f_hat]), t_now)
+                u_f, f_f = _unit(filt[:3]), _unit(filt[3:])
+                if u_f is not None and f_f is not None:
+                    u_hat, f_hat = u_f, f_f
+            flex = np.degrees(np.arccos(np.clip(np.dot(u_hat, f_hat), -1, 1)))
+
             suppress = flex < args.straight_arm_deg
             st["suppress"] += 1 if suppress else 0
             q, res, clamped = solve_arm(fks[s], u_hat, f_hat, q_prev[s],
-                                        lim4[s], suppress)
+                                        lim4[s], suppress, args.yaw_reg)
             q_prev[s] = q
             st["solved"] += 1
             st["res"].append(res)
             st["clamp"] += clamped
+            # EE tracking error: achieved FK tip vs the tip implied by the
+            # human directions and the robot's own limb lengths (metres).
+            anchor, elbow, tip = fks[s].positions(q)
+            l_up = np.linalg.norm(elbow - anchor)
+            l_fo = np.linalg.norm(tip - elbow)
+            target_tip = anchor + l_up * u_hat + l_fo * f_hat
+            st["ee"].append(float(np.linalg.norm(tip - target_tip)))
             row[si * 4:si * 4 + 4] = q
-        t_in.append(fi / args.fps)
+        t_in.append(t_now)
         q_in.append(row)
 
     if not t_in:
@@ -286,6 +442,12 @@ def main():
         if ok.sum() < 2:
             sys.exit(f"channel {k}: not enough solved frames")
         q_out[:, k] = np.interp(t_out, t_in[ok], col[ok])
+
+    if args.lp_cutoff > 0:
+        from scipy.signal import butter, filtfilt
+        b, a = butter(2, args.lp_cutoff / (args.rate / 2))
+        for k in range(8):
+            q_out[:, k] = filtfilt(b, a, q_out[:, k])
 
     if args.smooth_window > 1:
         w = args.smooth_window | 1            # force odd
@@ -314,10 +476,12 @@ def main():
     for s in SIDES:
         st = stats[s]
         res = np.array(st["res"]) if st["res"] else np.array([np.nan])
+        ee = np.array(st["ee"]) * 100 if st["ee"] else np.array([np.nan])
         print(f"[retarget] {s:>5}: solved={st['solved']} skipped={st['skipped']}"
-              f"  yaw-suppressed={st['suppress']}"
+              f"  gated={st['gated']}  yaw-suppressed={st['suppress']}"
               f"  IK residual mean={np.nanmean(res):.2f} deg"
               f" p95={np.nanpercentile(res, 95):.2f} deg"
+              f"  EE-track mean={np.nanmean(ee):.2f} cm p95={np.nanpercentile(ee, 95):.2f} cm"
               f"  limit-clamps p/r/y/e={st['clamp'].astype(int).tolist()}")
     names = [f"{s}_{seg}" for s in SIDES for seg in ARM_SEGS[:4]]
     peak = vel.max(axis=0)

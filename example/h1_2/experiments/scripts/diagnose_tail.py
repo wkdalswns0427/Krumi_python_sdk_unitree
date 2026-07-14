@@ -19,7 +19,7 @@ import sys
 
 import numpy as np
 
-import block1_compare as bc
+import example.h1_2.experiments.scripts.block1_compare as bc
 
 
 def load_intrinsics(capdir):

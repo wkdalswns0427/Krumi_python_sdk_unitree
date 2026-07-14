@@ -221,6 +221,50 @@ def compare(mono, rgbd, root_mode, conf_thresh, conf_reduce, align):
                         n_no_root=n_no_root)
 
 
+def axis_errors(mono, rgbd, conf_thresh, conf_reduce):
+    """Per-joint per-axis abs error (mm) in the RGBD camera frame.
+
+    Uses a SINGLE global Kabsch rotation fit over all matched frames, not the
+    per-frame procrustes the scalar MPJPE uses. This is deliberate: a
+    per-frame rotation reorients each frame to minimise total residual and so
+    ROTATES the depth disagreement into the in-plane axes, hiding the very
+    anisotropy F1 is about (measured: per-frame gives depth 0.67x in-plane,
+    global gives 1.45x on M1_R_1). The global fit removes only the fixed
+    mono-world vs rgbd-camera frame offset, preserving per-frame axis
+    structure. Axes: [0]=horizontal (x), [1]=vertical (y), [2]=depth (z).
+    """
+    common = sorted(set(mono) & set(rgbd))
+    Ms, Gs, Js = [], [], []
+    for fi in common:
+        fm, fr = mono[fi], rgbd[fi]
+        confs = [fm.conf.get(j, 1.0) for j in EVAL_JOINTS if j in fm.pos]
+        if confs:
+            c = min(confs) if conf_reduce == "min" else float(np.mean(confs))
+            if c < conf_thresh:
+                continue
+        js = [j for j in EVAL_JOINTS if j in fm.pos and j in fr.pos]
+        if len(js) < 3:
+            continue
+        M = np.array([fm.pos[j] for j in js])
+        G = np.array([fr.pos[j] for j in js])
+        Ms.append(M - M.mean(axis=0))
+        Gs.append(G - G.mean(axis=0))
+        Js.append(js)
+    errors_axis = {j: [] for j in EVAL_JOINTS}
+    if not Ms:
+        return errors_axis
+    allM, allG = np.vstack(Ms), np.vstack(Gs)
+    H = allM.T @ allG
+    U, S, Vt = np.linalg.svd(H)
+    d = np.sign(np.linalg.det(U @ Vt))
+    R = U @ np.diag([1.0, 1.0, d]) @ Vt                  # one global rotation
+    for M, G, js in zip(Ms, Gs, Js):
+        Ma = M @ R
+        for k, j in enumerate(js):
+            errors_axis[j].append(np.abs(Ma[k] - G[k]))
+    return errors_axis
+
+
 def summarize(errors):
     """Per-joint stats (mm) + overall (mean of per-joint means)."""
     rows = []
@@ -244,6 +288,101 @@ def summarize(errors):
                      p95=float(np.percentile(pooled, 95)) if pooled.size else float("nan"),
                      max=float(pooled.max()) if pooled.size else float("nan")))
     return rows, overall_mean
+
+
+AXES = ("horizontal", "vertical", "depth")
+
+
+def summarize_axes(errors_axis):
+    """Per-joint per-axis stats (mm) + overall, + depth:in-plane ratio.
+
+    In-plane error magnitude is sqrt(dx^2 + dy^2); depth is |dz|. The ratio
+    of depth-axis to in-plane error is the quantitative backbone of F1.
+    """
+    rows = []
+    pooled = {a: [] for a in AXES}
+    pooled_inplane = []
+    for j in EVAL_JOINTS:
+        stacked = np.array(errors_axis[j], float)          # n x 3
+        if stacked.size == 0:
+            rows.append(dict(joint=j, n=0, **{a: float("nan") for a in AXES},
+                             depth_inplane_ratio=float("nan")))
+            continue
+        per_axis = {a: stacked[:, i] for i, a in enumerate(AXES)}
+        inplane = np.sqrt(stacked[:, 0] ** 2 + stacked[:, 1] ** 2)
+        for i, a in enumerate(AXES):
+            pooled[a].append(stacked[:, i])
+        pooled_inplane.append(inplane)
+        ratio = (per_axis["depth"].mean() / inplane.mean()
+                 if inplane.mean() > 0 else float("nan"))
+        row = dict(joint=j, n=int(stacked.shape[0]),
+                   depth_inplane_ratio=float(ratio))
+        for a in AXES:
+            row[f"{a}_mean"] = float(per_axis[a].mean())
+            row[f"{a}_median"] = float(np.median(per_axis[a]))
+            row[f"{a}_p95"] = float(np.percentile(per_axis[a], 95))
+        rows.append(row)
+
+    ov = dict(joint="OVERALL")
+    if pooled[AXES[0]]:
+        cat = {a: np.concatenate(pooled[a]) for a in AXES}
+        inp = np.concatenate(pooled_inplane)
+        ov["n"] = int(cat["depth"].size)
+        for a in AXES:
+            ov[f"{a}_mean"] = float(cat[a].mean())
+            ov[f"{a}_median"] = float(np.median(cat[a]))
+            ov[f"{a}_p95"] = float(np.percentile(cat[a], 95))
+        ov["depth_inplane_ratio"] = (float(cat["depth"].mean() / inp.mean())
+                                     if inp.mean() > 0 else float("nan"))
+    rows.append(ov)
+    return rows
+
+
+def print_axis_summary(rows):
+    print("-" * 68)
+    print("  Per-axis error in the RGBD camera frame (mm), mean [median]:")
+    print(f"  {'joint':<16}{'horiz':>12}{'vert':>12}{'depth':>12}"
+          f"{'depth/inplane':>14}")
+    for r in rows:
+        if "horizontal_mean" not in r:
+            continue
+        if r["joint"] == "OVERALL":
+            print("  " + "-" * 64)
+        print(f"  {r['joint']:<16}"
+              f"{r['horizontal_mean']:>7.1f}[{r['horizontal_median']:>4.0f}]"
+              f"{r['vertical_mean']:>7.1f}[{r['vertical_median']:>4.0f}]"
+              f"{r['depth_mean']:>7.1f}[{r['depth_median']:>4.0f}]"
+              f"{r['depth_inplane_ratio']:>14.2f}")
+    print("=" * 68)
+    ov = rows[-1]
+    if "depth_inplane_ratio" in ov and ov["depth_inplane_ratio"] == ov["depth_inplane_ratio"]:
+        print(f"  F1 backbone: overall depth-axis error is "
+              f"{ov['depth_inplane_ratio']:.2f}x the in-plane error")
+        print("=" * 68)
+
+
+def write_axis_table(rows, path, tag):
+    fields = ["joint", "n",
+              "horizontal_mean_mm", "horizontal_median_mm", "horizontal_p95_mm",
+              "vertical_mean_mm", "vertical_median_mm", "vertical_p95_mm",
+              "depth_mean_mm", "depth_median_mm", "depth_p95_mm",
+              "depth_inplane_ratio"]
+    if tag is not None:
+        fields = ["tag"] + fields
+    with open(path, "w", newline="") as f:
+        w = csv.writer(f)
+        w.writerow(fields)
+        for r in rows:
+            if "horizontal_mean" not in r:
+                continue
+            vals = [r["joint"], r["n"]]
+            for a in AXES:
+                vals += [f"{r[f'{a}_mean']:.3f}", f"{r[f'{a}_median']:.3f}",
+                         f"{r[f'{a}_p95']:.3f}"]
+            vals += [f"{r['depth_inplane_ratio']:.4f}"]
+            if tag is not None:
+                vals = [tag] + vals
+            w.writerow(vals)
 
 
 def write_table(rows, path, tag):
@@ -321,6 +460,8 @@ def parse_args():
     p.add_argument("mono_file", nargs="?", help="monocular pipeline output")
     p.add_argument("rgbd_file", nargs="?", help="RGBD reference output")
     p.add_argument("--out", help="write per-joint error table to this CSV")
+    p.add_argument("--out-axis", help="write the per-axis (horizontal/vertical/"
+                   "depth) error table here (default: <out>_peraxis.csv)")
     p.add_argument("--tag", help="label column added to the output CSV rows "
                                  "(for later per-motion aggregation)")
     p.add_argument("--joints", choices=["arm", "full"], default="arm",
@@ -372,6 +513,9 @@ def main():
                            args.conf_reduce, align)
     rows, overall = summarize(errors)
     print_summary(rows, meta, overall, args.conf_threshold)
+    errors_axis = axis_errors(mono, rgbd, args.conf_threshold, args.conf_reduce)
+    axis_rows = summarize_axes(errors_axis)
+    print_axis_summary(axis_rows)
 
     if args.out:
         write_table(rows, args.out, args.tag)
@@ -380,6 +524,17 @@ def main():
         out = os.path.join(tmp, "per_joint_error.csv")
         write_table(rows, out, args.tag)
         print(f"\n[demo] wrote per-joint table: {out}")
+
+    # per-axis table goes to its own file so the default --out stays identical
+    axis_out = args.out_axis
+    if axis_out is None and args.out:
+        base, ext = os.path.splitext(args.out)
+        axis_out = base + "_peraxis" + ext
+    elif axis_out is None and args.demo:
+        axis_out = os.path.join(tmp, "per_axis_error.csv")
+    if axis_out:
+        write_axis_table(axis_rows, axis_out, args.tag)
+        print(f"Wrote per-axis table: {axis_out}")
 
 
 if __name__ == "__main__":

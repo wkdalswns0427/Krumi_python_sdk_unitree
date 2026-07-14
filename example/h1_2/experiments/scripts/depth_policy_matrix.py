@@ -27,8 +27,8 @@ import sys
 
 import numpy as np
 
-import bag_to_joints as b2j
-import block1_compare as bc
+import example.h1_2.experiments.scripts.bag_to_joints as b2j
+import example.h1_2.experiments.scripts.block1_compare as bc
 
 
 def find_mono(capdir, explicit):

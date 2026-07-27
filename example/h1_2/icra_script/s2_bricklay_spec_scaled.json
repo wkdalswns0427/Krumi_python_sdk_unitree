@@ -1,0 +1,41 @@
+{
+  "arm": "both",
+  "grasp_hw": 0.152,
+  "block_width": 0.238,
+  "block_height": 0.121,
+  "native_config": "natural",
+  "stations": [
+    [
+      0.26,
+      0.0,
+      -0.05
+    ],
+    [
+      0.34,
+      0.0,
+      0.0
+    ],
+    [
+      0.34,
+      0.0,
+      0.07
+    ],
+    [
+      0.34,
+      0.0,
+      0.14
+    ]
+  ],
+  "labels": [
+    "pick",
+    "block1",
+    "block2",
+    "block3"
+  ],
+  "tol_m": 0.08,
+  "dwell_s": 0.15,
+  "blocks": 3,
+  "native_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra_script/s2_bricklay_native.csv",
+  "human_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra_script/s2_bricklay_human.csv",
+  "note": "SCALED stations (legacy abstract geometry): what the retargeted human baseline actually reaches; the Block_S2 takes were validity-gated against these."
+}

@@ -203,6 +203,64 @@ class GravityFF:
               f"{total_m:.2f} kg distal of shoulder")
 
 
+def wrist_paths(names, Q, urdf):
+    """FK wrist positions per frame: (n, 2, 3) array, [left, right] wrists
+    in the torso frame (x forward, z up). Shared by the trim checks."""
+    import numpy as np
+    from h12_experiments.fk_h12 import H12ArmFK
+    fks = [H12ArmFK(urdf, side=s) for s in ("left", "right")]
+    idx = [[names.index(f"{s}_{seg}") for seg in ARM_SEGS]
+           for s in ("left", "right")]
+    out = np.zeros((len(Q), 2, 3))
+    for i, row in enumerate(Q):
+        for a in (0, 1):
+            out[i, a] = fks[a].ee_position([row[k] for k in idx[a]])
+    return out
+
+
+def safe_window(wp, x_min):
+    """First/last index where BOTH wrists are at least x_min forward of the
+    torso. Leading/trailing frames with a wrist behind the body are
+    retargeting artifacts (subject stepping into/out of position); driving
+    the go-to-start ramp there swings the arm behind the robot. Interior
+    frames untouched. wp = wrist_paths array. Returns (i0, i1) inclusive."""
+    behind = (wp[:, :, 0] < x_min).any(axis=1)
+    n = len(wp)
+    i0 = 0
+    while i0 < n - 1 and behind[i0]:
+        i0 += 1
+    i1 = n - 1
+    while i1 > i0 and behind[i1]:
+        i1 -= 1
+    return i0, i1
+
+
+def task_window(wp, t, signal, thresh, sustain_s, margin_s):
+    """Trim the human's PREPARATION (walk-in, settling) and post-task idling
+    from the clip ends, keeping every interior frame.
+
+    Prep is not low-speed (walking swings the arms), so speed cannot find
+    it; what separates task from prep is WHERE the wrists are. signal
+    selects the per-frame statistic: 'z' = max wrist height (M1 overhead
+    work), 'x' = max wrist forward reach (M2/M3 forward work). The signal
+    is rolling-median filtered over sustain_s so brief interpolation
+    wobbles at the clip head cannot fake a task start, then the window is
+    the first..last sustained crossing of thresh, padded by margin_s.
+    Returns (i0, i1) inclusive, or None if the signal never crosses."""
+    import numpy as np
+    sig = wp[:, :, 2].max(axis=1) if signal == "z" else wp[:, :, 0].max(axis=1)
+    dt = float(np.median(np.diff(t))) if len(t) > 1 else 0.02
+    k = max(1, int(round(sustain_s / dt)) | 1)
+    pad = k // 2
+    ext = np.pad(sig, pad, mode="edge")
+    rolled = np.array([np.median(ext[i:i + k]) for i in range(len(sig))])
+    active = np.where(rolled > thresh)[0]
+    if len(active) == 0:
+        return None
+    m = int(round(margin_s / dt))
+    return max(0, active[0] - m), min(len(sig) - 1, active[-1] + m)
+
+
 def load_traj(path):
     """(names, t array, Q array rows aligned to names)."""
     with open(path, newline="") as f:
@@ -231,6 +289,7 @@ class ArmSdk:
         self.dry = dry
         self.weight = 0.0
         self.pose = None                     # current commanded pose (list)
+        self.gain_override = {}              # name -> (kp, kd), optional
         # gravity feedforward: {side: GravityFF} + per-side name->slot map
         self.gravity = gravity or {}
         self.gravity_gain = gravity_gain
@@ -269,6 +328,12 @@ class ArmSdk:
             return [0.0] * len(self.names)
         return [self._state.motor_state[SDK_INDEX[n]].q for n in self.names]
 
+    def joint_q(self, name):
+        """Latest measured position of one joint (rad) from lowstate."""
+        if self.dry:
+            return 0.0
+        return float(self._state.motor_state[SDK_INDEX[name]].q)
+
     def _gravity_tau(self, pose):
         """{name: tau_ff} for the arm joints, scaled by weight * gain."""
         out = {}
@@ -289,7 +354,7 @@ class ArmSdk:
         gtau = self._gravity_tau(pose)
         for n, q in zip(self.names, pose):
             mc = self._msg.motor_cmd[SDK_INDEX[n]]
-            kp, kd = gains_for(n)
+            kp, kd = self.gain_override.get(n) or gains_for(n)
             mc.mode, mc.q, mc.dq = 1, float(q), 0.0
             mc.tau = float(gtau.get(n, 0.0))
             mc.kp, mc.kd = kp, kd
@@ -337,7 +402,30 @@ def main():
                         f"under-cancels)")
     p.add_argument("--urdf", default=os.path.expanduser(
         "~/mj_ws/assets/h1_2_description/h1_2.urdf"),
-                   help="URDF for gravity feedforward")
+                   help="URDF for gravity feedforward + the safe-start check")
+    p.add_argument("--wrist-behind-m", type=float, default=0.0,
+                   help="trim leading/trailing frames whose wrist FK is behind "
+                        "this torso-frame x (m); default 0.0 = do not start/"
+                        "end with a wrist behind the torso plane (those are "
+                        "clip-end retargeting artifacts that swing the arm "
+                        "behind the robot during go-to-start). Only contiguous "
+                        "leading/trailing frames are trimmed, never interior "
+                        "motion; pass a large negative value to disable")
+    p.add_argument("--task-signal", choices=["x", "z"], default="x",
+                   help="wrist statistic for the prep/tail trim: z = height "
+                        "(overhead work, M1), x = forward reach (M2/M3)")
+    p.add_argument("--task-thresh", type=float, default=0.0,
+                   help="prep/tail trim: play only the first..last sustained "
+                        "crossing of the task signal (m). 0 disables. "
+                        "Calibrated per motion: M1 z>0.40, M2 x>0.30, "
+                        "M3 x>0.22")
+    p.add_argument("--task-sustain", type=float, default=1.5,
+                   help="rolling-median window (s) for the task signal")
+    p.add_argument("--trim-margin", type=float, default=1.0,
+                   help="seconds kept before/after the detected task window")
+    p.add_argument("--clip", metavar="A:B",
+                   help="manual play window in trajectory seconds, e.g. "
+                        "6.0:36.5; overrides the automatic task trim")
     p.add_argument("--dry-run", action="store_true",
                    help="no DDS: validate the file and print the pre-flight")
     args = p.parse_args()
@@ -391,6 +479,37 @@ def main():
               + "  ".join(f"{k}={v * args.gravity_gain:.1f}Nm" for k, v in top)
               + "  (capped, scaled by overlay weight)")
 
+    # trims (intersected; interior frames are never touched):
+    #   1. safe-start: no wrist behind the torso at the window ends
+    #   2. task window: cut the human's prep/idle at the clip ends
+    #   3. --clip: manual override of the task window
+    i0, i1 = 0, n - 1
+    if os.path.isfile(args.urdf):     # large-negative --wrist-behind-m disables
+        wp = wrist_paths(names, Q, args.urdf)
+        i0, i1 = safe_window(wp, args.wrist_behind_m)
+        if i0 > 0 or i1 < n - 1:
+            print(f"[replay] safe-start trim: skipping {i0} leading + "
+                  f"{n - 1 - i1} trailing frame(s) with a wrist behind the "
+                  f"torso (artifact)")
+        if args.clip:
+            a, b = (float(v) for v in args.clip.split(":"))
+            j0 = min(range(n), key=lambda i: abs(t[i] - t[0] - a))
+            j1 = min(range(n), key=lambda i: abs(t[i] - t[0] - b))
+            i0, i1 = max(i0, j0), min(i1, j1)
+            print(f"[replay] manual clip {a:.1f}:{b:.1f}s applied")
+        elif args.task_thresh > 0:
+            tw = task_window(wp, t, args.task_signal, args.task_thresh,
+                             args.task_sustain, args.trim_margin)
+            if tw is None:
+                sys.exit(f"[replay] task trim: signal {args.task_signal} never "
+                         f"crosses {args.task_thresh}; wrong threshold/motion?")
+            i0, i1 = max(i0, tw[0]), min(i1, tw[1])
+        if i0 > 0 or i1 < n - 1:
+            print(f"[replay] play window: {t[i0] - t[0]:.1f}..{t[i1] - t[0]:.1f}s "
+                  f"of {dur:.1f}s (cut {t[i0] - t[0]:.1f}s prep, "
+                  f"{t[-1] - t[i1]:.1f}s tail)")
+            play_dur = (t[i1] - t[i0]) / args.speed_scale
+
     if args.dry_run:
         print("[replay] dry-run OK (no DDS, nothing published)")
         return
@@ -411,17 +530,17 @@ def main():
         input("ENTER to fade the arm overlay in (Ctrl+C aborts)... ")
         sdk.ramp_weight(1.0, 2.0)
         print("[replay] moving to trajectory start (3 s)...")
-        sdk.ramp_pose(Q[0], 3.0)
+        sdk.ramp_pose(Q[i0], 3.0)
         input(f"ENTER to play ({play_dur:.1f} s at speed "
               f"{args.speed_scale:g})... ")
         t_start = time.time()
-        i = 1
+        i = i0 + 1
         max_step = args.max_vel * ArmSdk.CTRL_DT
-        while i < n:
-            now = (time.time() - t_start) * args.speed_scale + t[0]
-            while i < n and t[i] < now:
+        while i <= i1:
+            now = (time.time() - t_start) * args.speed_scale + t[i0]
+            while i <= i1 and t[i] < now:
                 i += 1
-            if i >= n:
+            if i > i1:
                 break
             # interpolate the target at 'now', then rate-limit toward it
             span = max(t[i] - t[i - 1], 1e-6)

@@ -2,7 +2,7 @@
 """H1-2 raise right arm for 2 s when YOLO detects a person.
 
 Reads person-detection events from a UNIX socket (default
-/tmp/yolo_bridge.sock) fed by yolo_bridge.py. The bridge is a separate
+~/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock) fed by yolo_bridge.py. The bridge is a separate
 ROS 2 process running in system Python 3.10 because rclpy doesn't load
 under the conda env's Python 3.11 — split here to keep this script
 ROS-free and runnable from the conda env.
@@ -38,7 +38,7 @@ from unitree_sdk2py.idl.default import unitree_hg_msg_dds__LowCmd_
 from unitree_sdk2py.idl.unitree_hg.msg.dds_ import LowCmd_, LowState_
 
 
-SOCKET_PATH = "/tmp/yolo_bridge.sock"
+SOCKET_PATH = "/home/mchang344/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock"
 
 
 # ── H1-2 joint indices (same as pick_cone_palms.py) ─────────────────────────

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """H1-2 hold a (pretend) stop sign with the right arm when YOLO sees a person.
 
-Reads person events from the same /tmp/yolo_bridge.sock that wave_on_person.py
-uses (fed by yolo_bridge.py). On a person detection above MIN_CONF, the right
+Reads person events from the same ~/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock
+that wave_on_person.py uses (fed by yolo_bridge.py). On a person detection above MIN_CONF, the right
 arm raises to a chest-level "presenting" pose, holds for 5 seconds as if
 showing a handheld STOP sign, then lowers back to the captured rest pose.
 The left arm stays at rest throughout.
@@ -36,7 +36,7 @@ from unitree_sdk2py.idl.default import unitree_hg_msg_dds__LowCmd_
 from unitree_sdk2py.idl.unitree_hg.msg.dds_ import LowCmd_, LowState_
 
 
-SOCKET_PATH    = "/tmp/yolo_bridge.sock"
+SOCKET_PATH    = "/home/mchang344/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock"
 TRIGGER_CLASS  = "person"
 MIN_CONF       = 0.5
 

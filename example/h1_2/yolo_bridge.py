@@ -3,7 +3,9 @@
 
 Runs OUTSIDE the conda env, in system Python 3.10 where ROS Humble's rclpy
 loads correctly. Forwards a one-line JSON event per qualifying detection
-to /tmp/yolo_bridge.sock so a non-ROS Python (e.g. conda 3.11) can react.
+to the UNIX socket at SOCKET_PATH so a non-ROS Python (e.g. conda 3.11) can
+react. The socket lives inside the yolo_ws directory so it survives /tmp
+being wiped and stays next to the ROS package that owns it.
 
 Usage:
     # In a shell with NO conda active and ROS Humble sourced:
@@ -27,7 +29,7 @@ from rclpy.node import Node
 from vision_msgs.msg import Detection2DArray
 
 
-SOCKET_PATH    = "/tmp/yolo_bridge.sock"
+SOCKET_PATH    = "/home/mchang344/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock"
 MIN_CONF       = 0.5      # match wave_on_person.py default
 # TARGET_CLASS   = "person"
 TARGET_CLASSES = {"person", "traffic cone"}   # must match yolo_detector.py set_classes()

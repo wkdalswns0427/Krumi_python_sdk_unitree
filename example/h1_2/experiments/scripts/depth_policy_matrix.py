@@ -1,12 +1,6 @@
 #!/usr/bin/env python3
 """depth_policy_matrix.py - coverage vs error for every depth policy.
 
-Runs ONE MediaPipe pass over an RGBD capture directory and feeds the same
-landmark stream through all four depth sampling policies concurrently
-(strict, relaxed-limb, relaxed-all, search; see bag_to_joints.build_policy).
-For each policy it writes an rgbd joints CSV, then scores it against the
-given mono CSV with block1_compare's arm-scope procrustes comparison.
-
 Output: one assessment matrix (stdout + CSV): rows per joint (coverage),
 rejection breakdown, and per-joint mean/median/p95/max error plus overall.
 The point is coverage gained vs error paid, per policy. No winner is picked

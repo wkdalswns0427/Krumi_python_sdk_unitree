@@ -54,16 +54,22 @@ def run(args):
     else:
         ChannelFactoryInitialize(0)
 
+    rep = f"_R{args.rep}" if args.rep else ""
     out_path = os.path.join(
         os.path.expanduser(args.out_dir),
-        f"replay_M{args.motion}_T{args.trial}.csv")
+        f"replay_M{args.motion}{rep}_T{args.trial}.csv")
+    if os.path.exists(out_path):
+        sys.exit(f"[sdk-logger] REFUSING to overwrite existing {out_path}. "
+                 "Bump --trial (or --rep); no trial data is lost this way.")
     writer = TrialWriter(out_path, args.rate)
     counts = {"state": 0, "cmd": 0}
 
     def on_state(msg):
         counts["state"] += 1
         writer.set_exe([msg.motor_state[i].q for i in LOG_INDEX],
-                       msg.mode_machine)
+                       msg.mode_machine,
+                       [msg.motor_state[i].dq for i in LOG_INDEX],
+                       [msg.motor_state[i].tau_est for i in LOG_INDEX])
 
     def on_cmd(msg):
         counts["cmd"] += 1
@@ -148,6 +154,9 @@ def self_test(args):
                 cm.motor_cmd[i].q = q
                 cm.motor_cmd[i].tau = 2.0 * math.cos(2 * math.pi * 0.5 * t)
                 st.motor_state[i].q = 0.9 * q
+                st.motor_state[i].dq = 0.9 * 0.4 * 2 * math.pi * 0.5 * math.cos(
+                    2 * math.pi * 0.5 * t + 0.2 * k)
+                st.motor_state[i].tau_est = 5.0 * math.sin(2 * math.pi * 0.5 * t)
             pub_state.Write(st)
             pub_cmd.Write(cm)
             time.sleep(0.005)
@@ -179,7 +188,15 @@ def self_test(args):
     tmax = max(abs(float(r["cmdtau_right_elbow"])) for r in tau_ok)
     print(f"[self-test] cmdtau_right_elbow logged, peak {tmax:.2f} Nm "
           "(expect ~2.0)")
-    print("[self-test] PASS: DDS subscribe -> CSV path works end to end")
+    for col, peak_want in (("exedq_right_elbow", 0.9 * 0.4 * math.pi),
+                           ("exetau_right_elbow", 5.0)):
+        ok = [r for r in paired if r.get(col, "nan") != "nan"]
+        if len(ok) < 0.8 * len(paired):
+            sys.exit(f"[self-test] FAIL: {col} not logged (energy columns)")
+        pk = max(abs(float(r[col])) for r in ok)
+        print(f"[self-test] {col} logged, peak {pk:.2f} (expect ~{peak_want:.2f})")
+    print("[self-test] PASS: DDS subscribe -> CSV path works end to end "
+          "(incl. measured-energy columns)")
 
 
 def main():
@@ -190,6 +207,10 @@ def main():
                    help="robot network interface, e.g. enp128s31f6 "
                         "(must match replay_arm.py)")
     p.add_argument("--motion", type=int, default=0)
+    p.add_argument("--rep", type=int, default=0,
+                   help="reference-rep index; adds _R<rep> to the filename so "
+                        "replaying M2_1/M2_2/M2_3 stays distinguishable (0 = "
+                        "omit). Filenames: replay_M<motion>_R<rep>_T<trial>.csv")
     p.add_argument("--trial", type=int, default=0)
     p.add_argument("--rate", type=float, default=50.0)
     p.add_argument("--duration", type=float, default=0.0,

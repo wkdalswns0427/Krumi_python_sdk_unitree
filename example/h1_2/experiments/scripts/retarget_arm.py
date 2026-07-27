@@ -151,18 +151,23 @@ class OneEuro:
         return self.x.copy()
 
 
-def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw, yaw_reg=0.0):
+def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw, yaw_reg=0.0,
+              yaw_neutral=0.0):
     """Damped Gauss-Newton: match both limb segment directions.
 
     Returns (q4, residual_deg, clamped_flags). suppress_yaw freezes q[2].
 
-    yaw_reg > 0 adds a quadratic continuity penalty yaw_reg*(q[2]-yaw_ref)^2
-    on shoulder yaw ONLY (index 2), with yaw_ref = the previous accepted
-    frame's yaw (q_prev[2]). Shoulder yaw is the sole DOF whose direction
-    residual gradient goes shallow on forward-reaching poses (M2/M3), where
-    the warm-started solver otherwise hops to the far solution branch; the
-    penalty breaks that tie toward continuity without touching the
-    observable DOFs (pitch/roll/elbow get no penalty term).
+    Shoulder yaw (index 2) is the DOF whose direction-residual gradient goes
+    shallow on forward-reaching poses (M2/M3): the forearm direction is
+    matched by TWO very different humeral rotations (a natural one near
+    neutral, and a mirrored one ~150 deg away near the joint limit, which
+    looks like an inverted arm). Two regularizers on yaw ONLY, both leaving
+    the observable DOFs (pitch/roll/elbow) untouched:
+      yaw_neutral > 0 : pull toward 0. Breaks the branch ambiguity toward the
+        anatomically natural pose (the mirrored branch is ~150 deg off, so a
+        small weight rejects it while barely touching real +/-50 deg motion).
+      yaw_reg > 0     : continuity, pull toward the previous frame's yaw.
+    Use yaw_neutral for correct branch SELECTION and yaw_reg for smoothness.
     """
     q = np.array(q_prev, dtype=float)
     yaw_ref = float(q_prev[2])
@@ -195,9 +200,13 @@ def solve_arm(fk, u_hat, f_hat, q_prev, limits4, suppress_yaw, yaw_reg=0.0):
             J[:, k] = (rp - r) / eps
         JtJ = J.T @ J + 1e-2 * np.eye(4)
         rhs = -J.T @ r
-        if yaw_reg > 0 and not suppress_yaw:
-            JtJ[2, 2] += yaw_reg                     # penalty Hessian
-            rhs[2] -= yaw_reg * (q[2] - yaw_ref)     # penalty gradient
+        if not suppress_yaw:
+            if yaw_reg > 0:                          # continuity (prev frame)
+                JtJ[2, 2] += yaw_reg
+                rhs[2] -= yaw_reg * (q[2] - yaw_ref)
+            if yaw_neutral > 0:                      # branch select (toward 0)
+                JtJ[2, 2] += yaw_neutral
+                rhs[2] -= yaw_neutral * q[2]
         dq = np.linalg.solve(JtJ, rhs)
         if suppress_yaw:
             dq[2] = 0.0
@@ -330,13 +339,17 @@ def main():
                    help="zero-phase low-pass on the keypoint DEPTH axis "
                         "before retargeting, Hz (mono z is the noisy axis; "
                         "default 0.8; 0 disables)")
+    p.add_argument("--yaw-neutral", type=float, default=0.0,
+                   help="shoulder-yaw branch-selection weight: pull yaw toward "
+                        "0 so the IK picks the natural humeral rotation, not "
+                        "the mirrored branch near the joint limit (which looks "
+                        "like an inverted arm). FROZEN GLOBAL 0.02 (paired "
+                        "with --yaw-reg 0.05).")
     p.add_argument("--yaw-reg", type=float, default=0.0,
                    help="shoulder-yaw continuity penalty weight in the IK "
                         "(quadratic pull toward the previous frame's yaw; "
-                        "0 = off. Suppresses solution-branch flips on "
-                        "forward-reaching motions M2/M3; sweep to pick the "
-                        "smallest weight that kills flips without raising the "
-                        "direction residual)")
+                        "0 = off; kills single-frame flips). FROZEN GLOBAL "
+                        "0.05, paired with --yaw-neutral 0.02 (branch select)")
     args = p.parse_args()
 
     if not os.path.isfile(args.joints_csv):
@@ -412,7 +425,8 @@ def main():
             suppress = flex < args.straight_arm_deg
             st["suppress"] += 1 if suppress else 0
             q, res, clamped = solve_arm(fks[s], u_hat, f_hat, q_prev[s],
-                                        lim4[s], suppress, args.yaw_reg)
+                                        lim4[s], suppress, args.yaw_reg,
+                                        args.yaw_neutral)
             q_prev[s] = q
             st["solved"] += 1
             st["res"].append(res)

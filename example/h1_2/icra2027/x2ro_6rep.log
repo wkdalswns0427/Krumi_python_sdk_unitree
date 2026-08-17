@@ -1,0 +1,22 @@
+X2 robot-optimal: fidelity (human pose) vs robot-optimal, same task, right arm. Approach dir enforced at contact events only.
+
+rep     event%   manip mean f/ro   manip min f/ro   grav mean f/ro   lim min f/ro  ro err
+-----------------------------------------------------------------------------------------
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_1       18%    0.0269/0.0280   0.0004/0.0004     11.9/12.6    0.089/0.179   0.28
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_2        9%    0.0248/0.0258   0.0036/0.0002     12.3/12.4    0.023/0.162   0.22
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_3       12%    0.0259/0.0273   0.0001/0.0027     12.2/12.7   -0.001/0.154   0.26
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_1       36%    0.0230/0.0234   0.0062/0.0103      9.5/10.3   -0.004/0.035   0.11
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_2       29%    0.0234/0.0237   0.0004/0.0003      9.1/10.0    0.083/0.183   0.14
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_3       38%    0.0242/0.0242   0.0010/0.0001      9.0/10.0    0.173/0.093   0.21
+
+=== COST OF FIDELITY vs robot-optimal (mean over reps) ===
+  manipulability: 0.0247 vs 0.0254  -> fidelity gives up +3% of the margin
+  gravity load  : 10.7 vs 11.3 Nm  -> -0.7 Nm
+  limit margin  : 0.061 vs 0.134 rad  -> +55% closer to a limit
+[x2ro] wrote x2_robotopt_figure.pdf + .png (frame 8, manip gap 0.0061)

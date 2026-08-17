@@ -35,7 +35,7 @@
   "tol_m": 0.08,
   "dwell_s": 0.15,
   "blocks": 3,
-  "native_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra_script/s2_bricklay_native.csv",
-  "human_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra_script/s2_bricklay_human.csv",
+  "native_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/iros_pilot/s2_bricklay_native.csv",
+  "human_traj": "/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/iros_pilot/s2_bricklay_human.csv",
   "note": "PHYSICAL-block task (real block dims); block center = midpoint of the two hands. The retargeted human baseline places at ~0.6-scaled stations (embodiment scale) - gate it against the SCALED spec and report the mismatch as a finding, not a failure of the capture."
 }

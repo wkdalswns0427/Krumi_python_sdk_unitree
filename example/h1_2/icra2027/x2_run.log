@@ -1,0 +1,23 @@
+X2 cost of fidelity: reproducing the human pose vs task-centric, same task, right arm
+
+rep      manip mean  manip min  grav mean Nm  grav peak  limit min rad
+           fid / tc   fid / tc      fid / tc   fid / tc       fid / tc
+----------------------------------------------------------------------
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_1   0.0269/0.02700.0004/0.0003   11.9/11.9   15.4/15.4    0.089/0.115
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_2   0.0248/0.02500.0036/0.0013   12.3/12.3   17.4/17.6    0.023/0.047
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_3   0.0259/0.02610.0001/0.0001   12.2/12.2   16.9/17.0   -0.001/0.027
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_1   0.0230/0.02310.0062/0.0078    9.5/9.6    15.3/15.4   -0.004/0.029
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_2   0.0234/0.02340.0004/0.0005    9.1/9.2    13.0/13.2    0.083/0.110
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M3_3   0.0242/0.02430.0010/0.0000    9.0/9.1    14.9/15.0    0.173/0.201
+
+=== COST OF FIDELITY (mean over reps) ===
+  manipulability: fidelity 0.0247 vs task-centric 0.0248  -> fidelity gives up +1% of the margin
+  gravity load  : fidelity 10.7 Nm vs 10.7 Nm  -> -0.1 Nm extra
+  limit margin  : fidelity 0.061 rad vs 0.088 rad  -> +31% closer to a limit
+[x2] wrote x2_config_figure.pdf + .png (frame 21, manip gap 0.0017)

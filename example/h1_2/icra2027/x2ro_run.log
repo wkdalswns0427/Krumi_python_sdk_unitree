@@ -1,0 +1,9 @@
+X2 robot-optimal: fidelity (human pose) vs robot-optimal, same task, right arm. Approach dir enforced at contact events only.
+
+rep     event%   manip mean f/ro   manip min f/ro   grav mean f/ro   lim min f/ro  ro err
+-----------------------------------------------------------------------------------------
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_1       18%    0.0269/0.0283   0.0004/0.0001     11.9/12.7    0.089/0.239   0.18
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder
+M2_2        9%    0.0248/0.0260   0.0036/0.0002     12.3/12.5    0.023/0.186   0.18
+[gravity-ff] right: self-check OK, 6.40 kg distal of shoulder

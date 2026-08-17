@@ -1,0 +1,8 @@
+X6 critical ablation: fidelity (yaw hack OFF) vs task-centric, right shoulder-yaw
+flip = |dyaw|/dt > 6.0 rad/s
+
+rep            B1 nohack (fidelity)             X6 task-centric    X6 err
+            flips   pk vel   lim%     flips   pk vel   lim%       cm
+-------------------------------------------------------------------------
+M2_1           10     16.4      1         0      2.1      0     0.17
+M3_1            0      4.2      0         0      1.9      0     0.12

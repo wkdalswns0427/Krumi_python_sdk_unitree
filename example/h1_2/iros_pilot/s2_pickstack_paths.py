@@ -120,49 +120,35 @@ def main():
                           "manip_mean", "manip_sd", "manip_range", "over_block")])
     print(f"[handsep] wrote {os.path.basename(csvp)}")
 
-    # ---- horizontal two-panel figure: side view (x-z) + top view (y-x) ----
-    fig, (axs, axt) = plt.subplots(1, 2, figsize=(7.2, 3.4))
+    # ---- single side-view (x-z) panel ----
+    fig, ax = plt.subplots(figsize=(4.6, 3.6))
+    i, j = 0, 2                                    # x horizontal, z vertical
     off_side = {"Pick": (-4, -12, "right", "top"),
                 "Layer 1": (9, -4, "left", "center"),
                 "Layer 2": (9, 0, "left", "center"),
                 "Layer 3": (9, 3, "left", "center")}
-    for ax, (i, j, xl, yl, ttl) in (
-            (axs, (0, 2, "x  (forward +, m)", "z  (up +, m)", "side view")),
-            (axt, (1, 0, "y  (left +, m)", "x  (forward +, m)", "top view"))):
-        for H, col in ((humL, HUMAN_C), (humR, HUMAN_C),
-                       (natL, NATIVE_C), (natR, NATIVE_C)):
-            ax.plot(H[:, i], H[:, j], "-", color=col, lw=0.6, alpha=0.22, zorder=1)
-        ax.plot(humC[:, i], humC[:, j], "-", color=HUMAN_C, lw=2.0, zorder=3,
-                label="human baseline (retargeted capture)")
-        ax.plot(natC[:, i], natC[:, j], "-", color=NATIVE_C, lw=2.4, zorder=4,
-                label="robot-native (direct transfers)")
-        for lab, s in zip(labels, st):
-            ax.scatter(s[i], s[j], s=70, marker="s" if lab == "Pick" else "o",
-                       color=STATION_C, edgecolor="k", lw=0.6, zorder=6)
-            if ax is axs:                          # side: all layers distinct
-                dx, dy, ha, va = off_side.get(lab, (9, 3, "left", "center"))
-                ax.annotate(lab, (s[i], s[j]), textcoords="offset points",
-                            xytext=(dx, dy), fontsize=8, ha=ha, va=va, zorder=7)
-            elif lab == "Pick":                    # top: stack collapses to 1 pt
-                ax.annotate("Pick", (s[i], s[j]), textcoords="offset points",
-                            xytext=(8, -3), fontsize=8, zorder=7)
-            elif lab == labels[1]:
-                ax.annotate(f"stack (x{len(labels)-1})", (s[i], s[j]),
-                            textcoords="offset points", xytext=(8, 4),
-                            fontsize=8, zorder=7)
-        ax.set_xlabel(xl)
-        ax.set_ylabel(yl)
-        ax.set_title(ttl, fontsize=10)
-        ax.set_aspect("equal", "box")
-        ax.grid(alpha=0.3, lw=0.5)
-
-    handles, labs = axs.get_legend_handles_labels()
-    fig.legend(handles, labs, loc="lower center", ncol=2, fontsize=8,
-               framealpha=0.9, handlelength=1.8, columnspacing=1.6,
-               bbox_to_anchor=(0.5, -0.01))
-    fig.suptitle("Two-handed block pick-and-stack: block-center and hand "
-                 "trajectories", fontsize=10)
-    fig.tight_layout(rect=[0, 0.07, 1, 1])
+    for H, col in ((humL, HUMAN_C), (humR, HUMAN_C),
+                   (natL, NATIVE_C), (natR, NATIVE_C)):
+        ax.plot(H[:, i], H[:, j], "-", color=col, lw=0.6, alpha=0.22, zorder=1)
+    ax.plot(humC[:, i], humC[:, j], "-", color=HUMAN_C, lw=2.0, zorder=3,
+            label="human baseline (retargeted capture)")
+    ax.plot(natC[:, i], natC[:, j], "-", color=NATIVE_C, lw=2.4, zorder=4,
+            label="robot-native (direct transfers)")
+    for lab, s in zip(labels, st):
+        ax.scatter(s[i], s[j], s=70, marker="s" if lab == "Pick" else "o",
+                   color=STATION_C, edgecolor="k", lw=0.6, zorder=6)
+        dx, dy, ha, va = off_side.get(lab, (9, 3, "left", "center"))
+        ax.annotate(lab, (s[i], s[j]), textcoords="offset points",
+                    xytext=(dx, dy), fontsize=8, ha=ha, va=va, zorder=7)
+    ax.set_xlabel("x  (forward +, m)")
+    ax.set_ylabel("z  (up +, m)")
+    ax.set_title("Two-handed block pick-and-stack:\nblock-center and hand "
+                 "trajectories (side view)", fontsize=10)
+    ax.set_aspect("equal", "box")
+    ax.grid(alpha=0.3, lw=0.5)
+    ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.16), ncol=1,
+              fontsize=8, framealpha=0.9, handlelength=1.8, labelspacing=0.3)
+    fig.tight_layout()
     for ext in ("pdf", "png"):
         fig.savefig(f"{args.stem}.{ext}", dpi=300, bbox_inches="tight")
     print(f"[plot] wrote {os.path.basename(args.stem)}.pdf + .png")

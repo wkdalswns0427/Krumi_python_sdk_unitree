@@ -43,7 +43,7 @@ from h12_experiments.joints import ARM_CHAIN         # noqa: E402
 RJ = ARM_CHAIN["right"][:4]
 LJ = ARM_CHAIN["left"][:4]
 URDF = os.path.expanduser("~/mj_ws/assets/h1_2_description/h1_2.urdf")
-HUMAN_C, NATIVE_C = "#d1495b", "#00798c"           # colorblind-safe red / teal
+HUMAN_C, NATIVE_C = "#1f77b4", "#d62728"           # human blue / robot red
 STATION_C = "#edae49"
 NEW_LABELS = ["Pick", "Layer 1", "Layer 2", "Layer 3"]
 

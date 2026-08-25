@@ -1,0 +1,45 @@
+{
+  "side": "right",
+  "urdf": "/home/mchang344/mj_ws/assets/h1_2_description/h1_2.urdf",
+  "per_rep": [
+    {
+      "capture": "M2_1",
+      "fidelity": {
+        "n_frames": 1280,
+        "dt_median": 0.033333333333333215,
+        "flips_yaw": 15,
+        "tip_err_mean_mm": 348.4813378374741,
+        "tip_err_p95_mm": 439.4519890406787,
+        "limit_violation_frames": 7,
+        "any_violation": true,
+        "margin_mean": 0.1862724417051706,
+        "solver_ms_per_frame": 1.4393122608453268
+      },
+      "taskcentric": {
+        "n_frames": 1280,
+        "dt_median": 0.033333333333333215,
+        "flips_yaw": 0,
+        "tip_err_mean_mm": 0.05175828832453817,
+        "tip_err_p95_mm": 0.05162230520213196,
+        "limit_violation_frames": 0,
+        "any_violation": false,
+        "margin_mean": 0.27349082699292354,
+        "solver_ms_per_frame": 0.13836634207109455
+      }
+    }
+  ],
+  "totals": {
+    "fidelity": {
+      "total_flips": 15,
+      "total_violation_frames": 7,
+      "reps_with_violation": 1,
+      "reps_total": 1
+    },
+    "taskcentric": {
+      "total_flips": 0,
+      "total_violation_frames": 0,
+      "reps_with_violation": 0,
+      "reps_total": 1
+    }
+  }
+}

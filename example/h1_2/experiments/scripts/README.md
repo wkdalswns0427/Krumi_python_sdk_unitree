@@ -1,34 +1,31 @@
-# H1-2 experiment tooling (IROS 2026 workshop)
+# H1-2 experiment tooling (shared IROS 2026 + ICRA 2027)
 
-Offline analysis tools for the paper "From Worker to Humanoid: Markerless
-Motion Retargeting and Ergonomic Assessment for Construction Tasks"
-(IROS 2026 Workshop on Future of Construction). The experiment protocol and
-schedule live in `~/mj_ws/h1-2_sensors/experiments/iros2026ws/EXPERIMENT_PLAN.md`
-(data root, deviations log included).
+Offline tooling shared by the IROS 2026 workshop paper and the ICRA 2027
+follow-up (`../../icra2027/`). The Block 1 / Block 4 / one-time-sweep
+scripts were removed in the 2026-08-25 cleanup with the ICRA pivot — see
+`../../icra2027/PLAN.md` for the current scope.
 
-All tools: system `/usr/bin/python3` (conda deactivated), paths as CLI args,
-outputs default into a `b2g/` folder next to the input data.
+All tools: system `/usr/bin/python3` (conda deactivated), paths as CLI args.
 
 ## Tools in this directory
 
 | Tool | Purpose |
 |------|---------|
 | `bag_to_joints.py` | capture -> per-frame 3D joints CSV (mono + rgbd pipelines) |
-| `block1_compare.py` | mono vs rgbd per-joint 3D error (Block 1 metric) |
-| `rula_reba_agreement.py` | RULA/REBA category agreement (Block 4 metric) |
-| `angles.py` + `test_angles.py` | joints -> RULA/REBA input angles (scorer pending) |
+| `angles.py` + `test_angles.py` | joints -> RULA/REBA input angles |
+| `rula_reba_score.py` | RULA/REBA scoring (X7 manipulation check) |
 | `visualize_joints.py` | joints CSV -> 3D skeleton image/animation/overlay |
 | `bag_to_video.py` | rosbag color/depth stream -> mp4 for review |
-| `diagnose_tail.py` | explain worst mono-vs-rgbd errors (depth bleed forensics) |
-| `depth_policy_matrix.py` | one MediaPipe pass, all depth policies, coverage vs error |
-| `retarget_arm.py` | joints CSV -> 50 Hz H1-2 arm trajectory (Block 2 input) |
+| `retarget_arm.py` | joints CSV -> 50 Hz H1-2 arm trajectory |
 | `replay_arm.py` | trajectory -> rt/arm_sdk overlay player (unitree_sdk2py) |
-| `sdk_replay_logger.py` | cmd/exe logger over raw DDS; fallback for the ROS2 logger |
+| `sdk_replay_logger.py` | cmd/exe logger over raw DDS; primary log for X3 |
+| `latency_logger.py` | skeleton for the not-yet-built real-time retarget node |
 
 Canonical in `~/mj_ws/h1-2_sensors/yolo_ws/src/h12_experiments/`:
 `replay_logger.py` (ROS2 node, backup logging path), FK (`fk_h12.py`),
-`success_check.py`. `latency_logger.py` remains the skeleton for the
-not-yet-built real-time retarget node (Blocks 2/3).
+`success_check.py`.
+
+For ZED captures see `../../icra2027/src/zed/` (Track C).
 
 ## Capture sources
 
@@ -46,49 +43,15 @@ Default `--depth-policy relaxed-limb`: LiDAR confidence >= 1 accepted at
 elbows/wrists/knees/ankles, confidence == 2 required at shoulders/hips; 3x3
 native-pixel patch, median of survivors, 150 mm spread reject, dt-aware jump
 gate (`--max-joint-speed` 4 m/s x actual frame gap, with re-lock after 5
-consecutive rejections). Chosen from the `depth_policy_matrix.py` assessment
-on M1_R_1 + test1 (~10x limb coverage for ~2 mm overall error; the `search`
-fallback re-introduces background bleed and is rejected). Every run prints
-`video_frames` / processed / fps / dt and per-joint row counts; check
-`video_frames` matches the capture to catch input-path mixups.
+consecutive rejections). Chosen on M1_R_1 + test1 (~10x limb coverage for
+~2 mm overall error). Every run prints `video_frames` / processed / fps / dt
+and per-joint row counts; check `video_frames` matches the capture to catch
+input-path mixups.
 
 `--diagnose-depth` prints the gate-free per-joint confidence composition and
 unenforced jump statistics when a capture needs investigating.
 
-## Block 1 evaluation workflow (per rep)
-
-```bash
-conda deactivate
-cd ~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/scripts
-D=../iphone_data/M1_R_1   # one capture dir per rep (data root is one level up)
-/usr/bin/python3 bag_to_joints.py $D --mode mono --stride 2 --out $D/b2g/iph_mono.csv
-/usr/bin/python3 bag_to_joints.py $D --mode rgbd --stride 2 --out $D/b2g/iph_rgbd.csv
-/usr/bin/python3 block1_compare.py $D/b2g/iph_mono.csv $D/b2g/iph_rgbd.csv \
-    --procrustes --out $D/b2g/block1_<tag>.csv --tag <tag>
-```
-
-Use the same `--stride` for mono and rgbd (frame indices are inner-joined).
-Subject/device/capture metadata: `../iphone_data/metadata.yaml` (capture `role:`
-marks tuning vs evaluation clips).
-
-### Alignment: mono and rgbd are in DIFFERENT frames
-
-mono is MediaPipe's person-oriented world frame; rgbd is the camera optical
-frame. A translation-only comparison reports that frame mismatch, not pose
-error, so pick the metric deliberately:
-
-| `block1_compare.py` flag | Removes | Use when |
-|--------------------------|---------|----------|
-| *(none)*                 | pelvis translation | both files already share a frame |
-| `--procrustes`           | + rotation | **mono world vs rgbd camera (this study)** |
-| `--procrustes-scale`     | + rotation + scale | PA-MPJPE, scale-invariant |
-
-Both procrustes variants match the paper's claim language "relative 3D joint
-error". Procrustes centres on the joint centroid (Kabsch), not the pelvis.
-
-## Data contracts
-
-### Per-frame 3D joints (Block 1)
+## Data contract: per-frame 3D joints
 
 Canonical long CSV (`.csv`), or MediaPipe motion JSON (`.json`,
 `json2pose.py` format) auto-detected:
@@ -98,33 +61,17 @@ frame,joint,x,y,z,conf
 0,left_shoulder,0.121,-0.052,0.301,0.98
 ```
 
-- `frame`: integer index, inner-joined between files.
+- `frame`: integer index.
 - `x,y,z`: `--in-units` (default metres).
-- `conf`: [0,1]; only the mono file's conf drives the frame-exclusion rule
-  (`--conf-threshold`, default 0.5; exclusion rate is reported).
+- `conf`: [0,1]; the mono file's conf drives the frame-exclusion rule
+  (`--conf-threshold`, default 0.5).
 
-Joint set: Block 1 scores 6 (L/R shoulder, elbow, wrist). Hips ride along so
-the pelvis root can be derived. `--joints full` (bag_to_joints default) adds
-knees + ankles for RULA/REBA scoring via `angles.py`; `block1_compare`
-defaults to the 6-joint arm scope, so the wider export does not move Block 1
-numbers. Face landmarks (nose, ears) are deliberately not exported; neck
-scoring uses a neutral-neck assumption (like the wrist).
+Joint set: `--joints full` (default) exports 12 joints (L/R shoulder, elbow,
+wrist, hip, knee, ankle) for RULA/REBA scoring via `angles.py`. Face
+landmarks (nose, ears) are deliberately not exported; neck scoring uses a
+neutral-neck assumption.
 
-### Per-frame ergonomic scores (Block 4)
-
-One CSV per pipeline, consumed by `rula_reba_agreement.py`:
-
-```
-frame,rula_score,reba_score
-```
-
-Grand scores are banded into risk categories with identical code for both
-pipelines (or pass `rula_category`/`reba_category` directly). Bands, citable:
-RULA 1-2 -> 1 Acceptable, 3-4 -> 2 Investigate, 5-6 -> 3 Change soon,
-7 -> 4 Change now. REBA 1 -> 0 Negligible, 2-3 -> 1 Low, 4-7 -> 2 Medium,
-8-10 -> 3 High, 11+ -> 4 Very high.
-
-### Blocks 2/3
+## Replay logging
 
 Replay CSV (cmd/exe/err per joint at 50 Hz) is consumed by
 `success_check.py` (FK from the URDF) in the h12_experiments package. Two
@@ -173,8 +120,6 @@ strike rhythm preserved (peaks 8.3 -> 5.8 rad/s).
 
 ```bash
 /usr/bin/python3 bag_to_joints.py --self-test   # deproject, policies, jump gate
-/usr/bin/python3 block1_compare.py --demo
-/usr/bin/python3 rula_reba_agreement.py --demo
 /usr/bin/python3 -m pytest test_angles.py -q
 /usr/bin/python3 replay_arm.py TRAJ.csv --dry-run
 # real DDS round-trip on loopback (conda env with unitree_sdk2py):

@@ -113,6 +113,9 @@ def main():
     p.add_argument("--native-knee-deg", type=float, default=62.0,
                    help="measured native crouch knee bend (knee_probe.py)")
     p.add_argument("--stem", default=os.path.join(HERE, "s2_pickstack_ergo"))
+    p.add_argument("--rula-only", action="store_true",
+                   help="single RULA panel only (IROS WS dropped REBA); writes "
+                        "<stem>_rula.*")
     args = p.parse_args()
 
     up_h = tuple(float(v) for v in args.human_up.split(","))
@@ -131,16 +134,21 @@ def main():
     mB = occupancy("mimic", [r[2] for r in mim], REBA_BANDS)
     nB = occupancy("native", [r[2] for r in nat], REBA_BANDS)
 
-    fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.5))
-    series = [("human capture (real)", HUMAN_C, 1.7, "-", 5),
-              ("robot mimic (as-if-human)", MIMIC_C, 1.4, "--", 6),
-              ("robot-native (as-if-human)", NATIVE_C, 1.7, "-", 4)]
-    halo = [pe.Stroke(linewidth=2.6, foreground="white"), pe.Normal()]
-    panels = [(axes[0], RULA_BANDS, (hR, mR, nR), "RULA grand score", 7,
-               [1, 3, 5, 7]),
-              (axes[1], REBA_BANDS, (hB, mB, nB), "REBA grand score", 12,
-               [1, 3, 5, 7, 9, 11])]
     from matplotlib.lines import Line2D
+    if args.rula_only:
+        fig, ax0 = plt.subplots(figsize=(4.8, 5.0))
+        panels = [(ax0, RULA_BANDS, (hR, mR, nR), "RULA grand score", 7,
+                   [1, 3, 5, 7])]
+    else:
+        fig, axes = plt.subplots(1, 2, figsize=(7.4, 3.5))
+        panels = [(axes[0], RULA_BANDS, (hR, mR, nR), "RULA grand score", 7,
+                   [1, 3, 5, 7]),
+                  (axes[1], REBA_BANDS, (hB, mB, nB), "REBA grand score", 12,
+                   [1, 3, 5, 7, 9, 11])]
+    series = [("human demonstration", HUMAN_C, 1.7, "-", 5),
+              ("Human-Derived Motion", MIMIC_C, 1.4, "--", 6),
+              ("Robot-Specific Motion", NATIVE_C, 1.7, "-", 4)]
+    halo = [pe.Stroke(linewidth=2.6, foreground="white"), pe.Normal()]
     for ax, bands, tri, ttl, ymax, yticks in panels:
         for (lo, hi, lab), c in zip(bands, BAND_COLORS):
             ax.axhspan(lo - 0.5, hi + 0.5, color=c, zorder=0)
@@ -171,18 +179,31 @@ def main():
 
     handles = [Line2D([0], [0], color=c, lw=lw + 0.3, ls=ls)
                for (_, c, lw, ls, _) in series]
-    fig.legend(handles, [s[0] for s in series], loc="lower center", ncol=3,
-               fontsize=8, framealpha=0.9, handlelength=1.8, columnspacing=1.3,
-               bbox_to_anchor=(0.5, -0.015))
-    fig.suptitle("Block pick-and-stack: RULA and REBA posture scores "
-                 "(as-if-human, posture-only, load = 0)", fontsize=10)
-    fig.text(0.5, 0.072, "robot trajectories scored with the human posture "
-             "tables: a posture-similarity statement, not robot injury risk",
-             ha="center", fontsize=6.8, style="italic", color="#444444")
-    fig.tight_layout(rect=[0, 0.12, 1, 0.95], w_pad=2.5)
+    if args.rula_only:
+        fig.legend(handles, [s[0] for s in series], loc="lower center", ncol=1,
+                   fontsize=8, framealpha=0.9, handlelength=1.8, labelspacing=0.3,
+                   bbox_to_anchor=(0.5, 0.04))
+        fig.suptitle("Block pick-and-stack: RULA posture score "
+                     "(posture-only, load = 0)", fontsize=10)
+        fig.text(0.5, 0.205, "robot trajectories scored with the human posture "
+                 "tables: a posture-similarity\nstatement, not robot injury risk",
+                 ha="center", fontsize=6.8, style="italic", color="#444444")
+        fig.tight_layout(rect=[0, 0.30, 1, 0.95])
+        stem = args.stem + "_rula"
+    else:
+        fig.legend(handles, [s[0] for s in series], loc="lower center", ncol=3,
+                   fontsize=8, framealpha=0.9, handlelength=1.8, columnspacing=1.3,
+                   bbox_to_anchor=(0.5, -0.015))
+        fig.suptitle("Block pick-and-stack: RULA and REBA posture scores "
+                     "(posture-only, load = 0)", fontsize=10)
+        fig.text(0.5, 0.072, "robot trajectories scored with the human posture "
+                 "tables: a posture-similarity statement, not robot injury risk",
+                 ha="center", fontsize=6.8, style="italic", color="#444444")
+        fig.tight_layout(rect=[0, 0.12, 1, 0.95], w_pad=2.5)
+        stem = args.stem
     for ext in ("pdf", "png"):
-        fig.savefig(f"{args.stem}.{ext}", dpi=300, bbox_inches="tight")
-    print(f"[ergo] wrote {os.path.basename(args.stem)}.pdf + .png")
+        fig.savefig(f"{stem}.{ext}", dpi=300, bbox_inches="tight")
+    print(f"[ergo] wrote {os.path.basename(stem)}.pdf + .png")
 
 
 if __name__ == "__main__":

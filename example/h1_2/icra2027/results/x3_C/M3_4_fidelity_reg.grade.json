@@ -1,0 +1,67 @@
+{
+  "trajectory": "M3_4_fidelity_reg.csv",
+  "capture": "M3_4",
+  "condition": "fidelity_reg",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 5954,
+      "frames_on_limit": 347,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.1368629076197154,
+      "p95_err_deg": 2.428495938606868,
+      "max_err_deg": 6.898927515390729,
+      "mean_err_at_limit_deg": 1.0847767830244228,
+      "mean_err_elsewhere_deg": 1.1400863578131462,
+      "ratio": 0.9514865041497249,
+      "outcome": "C"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 5954,
+      "frames_on_limit": 134,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 2.635754743388935,
+      "p95_err_deg": 10.417475659233993,
+      "max_err_deg": 31.068865624086943,
+      "mean_err_at_limit_deg": 1.1791778212761024,
+      "mean_err_elsewhere_deg": 2.6692910505303646,
+      "ratio": 0.4417569305684407,
+      "outcome": "C"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 2707,
+      "frames_on_limit": 139,
+      "executed_out_of_limits": 97,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.4512082248106897,
+      "p95_err_deg": 4.104317275273213,
+      "max_err_deg": 9.924603039917578,
+      "mean_err_at_limit_deg": 1.5329837209099522,
+      "mean_err_elsewhere_deg": 1.4467819031760334,
+      "ratio": 1.0595817638751805,
+      "outcome": "A"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 2707,
+      "frames_on_limit": 54,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 2.933008003981015,
+      "p95_err_deg": 10.6948588518017,
+      "max_err_deg": 30.816649602670353,
+      "mean_err_at_limit_deg": 1.8682546234290938,
+      "mean_err_elsewhere_deg": 2.954680330611171,
+      "ratio": 0.6323034692022498,
+      "outcome": "C"
+    }
+  ]
+}

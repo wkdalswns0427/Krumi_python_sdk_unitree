@@ -365,6 +365,54 @@ It also reframes an earlier observation. On the supporting arm, task-defined was
 
 `src/common/self_collision.py` models each arm as upper arm, forearm and hand bar, and `x3_hardware_replay.py prep` now refuses to pass a both-arm trajectory inside the margin. The segment model gives limbs no width, so reported clearance is optimistic.
 
+### 3f. X3 hardware replay, three sessions on 2026-09-02
+
+**Two different things are lettered A, B and C in this project. They are unrelated.**
+
+**Replay sets** are which trajectories were driven, and live in `results/x3_A`, `x3_B`, `x3_C`. Referred to below by name rather than letter.
+
+| set | dir | arms | captures | conditions | runs | status |
+| --- | --- | --- | --- | --- | --- | --- |
+| single-arm | `x3_B` | right only, left parked | M2_1, M3_1 | fidelity_reg, taskdefined | 8 | **superseded** |
+| bimanual | `x3_A` | both | M2_1, M3_1 | fidelity_reg, taskdefined | 8 | primary |
+| extension | `x3_C` | both | M3_3, M3_4 | fidelity_reg, taskdefined | 8 | primary |
+
+All at speed scale 0.2 as trial 1 and 0.5 as trial 2, low-pass 2.0 Hz, bar hands removed, torso repair active.
+
+**Outcomes** are what the hardware did with a command sitting on a joint limit. This is the classification the experiment exists to make.
+
+| outcome | meaning |
+| --- | --- |
+| A | the executed pose left the joint limits. Limit contact is directly visible. |
+| B | the controller clamped and the pose stayed inside, so the cost appears only as tracking error, elevated at the predicted frames and normal elsewhere. |
+| C | neither. The offline prediction had no measurable hardware consequence. |
+
+**The single-arm set is superseded and should not be reported.** Its trajectories were prepped before the clamp fix, so 40 and 62 frames commanded a joint up to 4.17 degrees past its stop. The apparent Outcome A there was the robot obeying an out-of-limit command. The bimanual and extension sets were clamped and carry no such frames.
+
+#### What the two primary sets show
+
+**Task-defined never reaches a joint limit.** Zero frames on limit across 16 runs, both arms, both speeds, four captures. That control is as clean as it can be.
+
+**Fidelity reaches limits and the penalty scales with how often.** Across the twelve fidelity arm-runs the tracking-error ratio rises with the fraction of frames on the limit, correlation +0.850, fitted slope 0.094 per percent.
+
+| capture | side | percent on limit | error ratio | outcome |
+| --- | --- | --- | --- | --- |
+| M2_1 | left | 14.0 / 11.6 | **1.89 / 1.79** | B |
+| M3_1 | right | 6.7 / 5.8 | 1.04 / 0.85 | C / A |
+| M3_4 | right | 5.8 / 5.1 | 0.95 / 1.06 | C / A |
+| M2_1 | right | 5.4 / 4.3 | 1.12 / 1.10 | C |
+| M3_4 | left | 2.3 / 2.0 | 0.44 / 0.63 | C |
+| M3_1 | left | 1.0 / 0.9 | 0.55 / 1.20 | C |
+| M3_3 | both | 0.0 | none | control |
+
+**The trend rests on one capture.** Removing M2_1's left arm drops the correlation from +0.850 to +0.457 and the range to 0.9 through 6.7 percent. The two high points are the same arm of the same capture at two speeds, so they are not independent. State this plainly rather than quoting +0.850 alone.
+
+#### Why the range could not be extended
+
+M2_2 and M2_3 have the highest left-arm limit contact at 31.4 and 26.5 percent, and would have anchored the top of the curve. Both put the left arm 15.5 and 7.9 cm inside the torso. Clearing that needs 37 and 33 degrees of added abduction, which displaces the wrist 31.6 and 27.0 cm and is no longer the retargeted trajectory.
+
+That is not bad luck. An arm driven onto its joint limits by an adducted posture is the same arm pressed toward the chest, so high limit contact and torso penetration share a cause. **The captures that would best extend the curve are systematically the ones that cannot be replayed**, which bounds what hardware validation can reach here and belongs in the limitations.
+
 ### 4. Changes a claim if it comes out badly
 
 - **Verify the redundancy accounting numerically** against the task Jacobian rank at real capture configurations. Paragraph 10 currently presents the swivel argument as a mechanism when it is a hypothesis, and a reviewer can attack that. Compute only, no capture, and cheap.

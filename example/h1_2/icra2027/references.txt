@@ -1,0 +1,119 @@
+REFERENCES, plain text
+ICRA 2027 submission. Companion to references.bib.
+
+Entries marked [VERIFY] have details I could not confirm from this repository.
+Check each against the actual paper before submission.
+
+
+CONFIDENT: standard references
+=================================================================
+
+[1]  A. Liegeois, "Automatic supervisory control of the configuration and
+     behavior of multibody mechanisms," IEEE Transactions on Systems, Man, and
+     Cybernetics, vol. 7, no. 12, pp. 868-871, 1977.
+     Use for: null-space joint-limit avoidance by gradient projection, the
+     standard remedy the paper measures against.
+
+[2]  T. Yoshikawa, "Manipulability of robotic mechanisms," The International
+     Journal of Robotics Research, vol. 4, no. 2, pp. 3-9, 1985.
+     Use for: the manipulability measure reported as a conditioning metric.
+
+[3]  Y. Nakamura and H. Hanafusa, "Inverse kinematic solutions with singularity
+     robustness for robot manipulator control," Journal of Dynamic Systems,
+     Measurement, and Control, vol. 108, no. 3, pp. 163-171, 1986.
+     Use for: damped least squares, the B2 baseline solver.
+
+[4]  C. W. Wampler, "Manipulator inverse kinematic solutions based on vector
+     formulations and damped least-squares methods," IEEE Transactions on
+     Systems, Man, and Cybernetics, vol. 16, no. 1, pp. 93-101, 1986.
+     Use for: damped least squares, cite alongside [3].
+
+[5]  D. E. Whitney, "Resolved motion rate control of manipulators and human
+     prostheses," IEEE Transactions on Man-Machine Systems, vol. 10, no. 2,
+     pp. 47-53, 1969.
+     Use for: the origin of resolved-rate redundancy resolution.
+
+[6]  L. McAtamney and E. N. Corlett, "RULA: a survey method for the
+     investigation of work-related upper limb disorders," Applied Ergonomics,
+     vol. 24, no. 2, pp. 91-99, 1993.
+     Use for: the posture score in X7 and the replica-versus-replacement
+     argument.
+
+[7]  S. Hignett and L. McAtamney, "Rapid Entire Body Assessment (REBA),"
+     Applied Ergonomics, vol. 31, no. 2, pp. 201-205, 2000.
+     Use for: whole-body posture scoring, cite alongside [6].
+
+[8]  G. Casiez, N. Roussel, and D. Vogel, "1 euro filter: a simple speed-based
+     low-pass filter for noisy input in interactive systems," in Proc. SIGCHI
+     Conference on Human Factors in Computing Systems (CHI), 2012,
+     pp. 2527-2530.
+     Use for: the direction-conditioning filter in the methods section. This
+     citation is now load-bearing, since omitting the filter changed our
+     conclusions.
+
+[9]  M. Loper, N. Mahmood, J. Romero, G. Pons-Moll, and M. J. Black, "SMPL: a
+     skinned multi-person linear model," ACM Transactions on Graphics, vol. 34,
+     no. 6, pp. 248:1-248:16, 2015.
+     Use for: the body model that the hard-keypoint baseline fits, which we
+     reproduce in closed form from the robot's link lengths.
+
+
+[VERIFY]: retargeting literature
+=================================================================
+These are the papers the argument is built against, so the citations must be
+exact. Confirm authors, venue and year for each.
+
+[10] [VERIFY] T. He et al., "Learning human-to-humanoid real-time whole-body
+     teleoperation," IROS, 2024. arXiv:2403.04436.
+     Use for: H2O, the hard-keypoint anchor at the high-posture end of the
+     axis, and its feasibility filter as the objection to pre-empt.
+
+[11] [VERIFY] T. He et al., "OmniH2O: universal and dexterous human-to-humanoid
+     whole-body teleoperation and learning," CoRL, 2024.
+     Use for: cite with [10] as the same line of work.
+
+[12] [VERIFY] J. Li et al., "OKAMI: teaching humanoid robots manipulation
+     skills through single video imitation," CoRL, 2024. arXiv:2410.11792.
+     Use for: the soft-posture anchor. Its published weight ratio defines the
+     pinned condition in the factorial. Do not describe it as a configuration
+     tracker.
+
+[13] [VERIFY] Z. Fu et al., "HumanPlus: humanoid shadowing and imitation from
+     humans," CoRL, 2024.
+     Use for: the shadowing line of work.
+
+[14] [VERIFY ALL FIELDS] Liu and Liu, "Humanoid robot learning of construction
+     tasks from worker demonstrations," Computer-Aided Civil and Infrastructure
+     Engineering, 2026.
+     Use for: the closest related work, a teacher-student policy trained to
+     track a fidelity-retargeted reference, which is the pattern this paper
+     measures the cost of. Read before writing related work. The reported MPJPE
+     figure in our notes also needs checking.
+
+[15] [VERIFY] T. He et al., "ASAP: aligning simulation and real-world physics
+     for learning agile humanoid whole-body skills," RSS, 2025.
+     Use for: the residual-learning cluster, cited as complementary and never
+     claimed as a contribution.
+
+
+[VERIFY]: placeholders to resolve
+=================================================================
+
+[16] [PLACEHOLDER] Ergonomics-aware robot motion planning. The outline refers
+     to DULA, DEBA and NeuroErgo as a cluster. Choose the two or three specific
+     papers to cite and replace this entry. The claim they support is that this
+     literature keeps the human in the loop, which is the gap C4 occupies.
+
+[17] [VERIFY] Stereolabs ZED SDK body tracking, BODY_38 format. Cite the SDK
+     version actually used in the 2026-08-29 session.
+
+[18] [VERIFY] Our own prior workshop paper, cited as baseline B1 and as the
+     source of the shipped yaw regularizer. Fill in once indexed. Note that the
+     paper must report both its naive and regularized forms.
+
+
+NOT YET SOURCED
+=================================================================
+The outline mentions "RobotDancing" and "SENTINEL" as part of the residual
+learning cluster. I could not confirm either, so no entry is provided. Either
+supply the correct citations or cite ASAP [15] alone for that cluster.

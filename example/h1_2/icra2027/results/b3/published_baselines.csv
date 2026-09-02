@@ -1,0 +1,4 @@
+condition,posture_weight,flips,viol_reps,reps,margin,manip,tip_mm,approach_deg
+h2o-keypoint,hard,12,1,1,0.1865,0.2200,0.203,0.12
+okami-gain1.0,0.04 / 0.08,12,1,1,0.1865,0.2202,0.111,0.16
+taskcentric,none,0,0,1,0.3139,0.2273,0.089,18.78

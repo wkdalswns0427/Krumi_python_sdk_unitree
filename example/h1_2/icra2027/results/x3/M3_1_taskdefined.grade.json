@@ -1,0 +1,11 @@
+{
+  "trajectory": "M3_1_taskdefined.csv",
+  "capture": "M3_1",
+  "condition": "taskdefined",
+  "log": "replay_M0_T1.csv",
+  "n_frames": 6032,
+  "frames_on_limit": 0,
+  "executed_out_of_limits": 0,
+  "mean_err_deg": 1.137783745224558,
+  "p95_err_deg": 2.7677241955810037
+}

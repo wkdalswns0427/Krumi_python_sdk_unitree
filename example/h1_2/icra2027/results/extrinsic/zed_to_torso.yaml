@@ -1,0 +1,23 @@
+# ZED left-optical -> torso_link extrinsic (D1). Hand-eye, eye-to-hand.
+# p_torso = R @ p_zed_optical + t. Replaces the identity placeholder in
+# zed_realtime_node.py. Regenerate with zed_extrinsic_solve.py.
+solved_on: 2026-08-27
+method: PARK
+n_poses: 11
+arm_side: right
+source_capture: capture.json
+residual_translation_mm: 8.96
+residual_rotation_deg: 1.190
+frame_parent: torso_link
+frame_child: zed_left_optical
+translation_m: {x: 0.140236, y: 0.053528, z: 0.525141}
+rotation_quat_xyzw: [-0.498398, 0.494677, -0.503670, 0.503199]
+rotation_matrix:
+  - [0.003221, 0.013800, 0.999900]
+  - [-0.999986, -0.004170, 0.003278]
+  - [0.004215, -0.999896, 0.013787]
+homogeneous:
+  - [0.003221, 0.013800, 0.999900, 0.140236]
+  - [-0.999986, -0.004170, 0.003278, 0.053528]
+  - [0.004215, -0.999896, 0.013787, 0.525141]
+  - [0.000000, 0.000000, 0.000000, 1.000000]

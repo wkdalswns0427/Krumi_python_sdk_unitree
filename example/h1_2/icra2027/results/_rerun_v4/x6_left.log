@@ -1,0 +1,11 @@
+[x6]   M2_1 side=left  fidelity: flips=132 viol_frames=240 tip_mm= 29.2 margin=0.12 ms/f=2.3  fidelity_reg: flips=54 viol_frames=263 tip_mm= 32.9 margin=0.11 ms/f=2.4  taskcentric: flips=18 viol_frames=220 tip_mm= 12.6 margin=0.13 ms/f=15.5  taskdefined: flips= 0 viol_frames=  0 tip_mm=  0.1 margin=0.27 ms/f=1.5
+[x6]   M2_2 side=left  fidelity: flips=127 viol_frames=282 tip_mm= 26.0 margin=0.13 ms/f=2.3  fidelity_reg: flips=68 viol_frames=306 tip_mm= 30.8 margin=0.11 ms/f=2.4  taskcentric: flips=16 viol_frames=248 tip_mm= 10.4 margin=0.14 ms/f=14.8  taskdefined: flips= 5 viol_frames=  0 tip_mm=  0.1 margin=0.27 ms/f=1.4
+[x6]   M2_3 side=left  fidelity: flips=187 viol_frames=217 tip_mm= 19.2 margin=0.11 ms/f=2.2  fidelity_reg: flips=93 viol_frames=235 tip_mm= 21.1 margin=0.10 ms/f=2.3  taskcentric: flips=24 viol_frames=195 tip_mm=  9.6 margin=0.14 ms/f=14.0  taskdefined: flips= 8 viol_frames=  0 tip_mm=  0.1 margin=0.28 ms/f=1.5
+[x6]   M3_1 side=left  fidelity: flips=19 viol_frames=  0 tip_mm=  0.4 margin=0.21 ms/f=1.4  fidelity_reg: flips=42 viol_frames= 28 tip_mm=  4.0 margin=0.20 ms/f=1.8  taskcentric: flips= 3 viol_frames=  0 tip_mm=  0.1 margin=0.23 ms/f=2.9  taskdefined: flips= 0 viol_frames=  0 tip_mm=  0.1 margin=0.31 ms/f=1.5
+[x6]   M3_2 side=left  fidelity: flips=84 viol_frames=  1 tip_mm=  0.4 margin=0.17 ms/f=1.5  fidelity_reg: flips=91 viol_frames= 26 tip_mm=  4.6 margin=0.16 ms/f=1.9  taskcentric: flips=11 viol_frames=  3 tip_mm=  0.1 margin=0.19 ms/f=3.7  taskdefined: flips= 2 viol_frames=  0 tip_mm=  0.1 margin=0.30 ms/f=1.5
+[x6]   M3_3 side=left  fidelity: flips=87 viol_frames=  0 tip_mm=  0.4 margin=0.19 ms/f=1.5  fidelity_reg: flips=69 viol_frames=  0 tip_mm=  3.4 margin=0.19 ms/f=1.8  taskcentric: flips=13 viol_frames= 73 tip_mm=  1.3 margin=0.19 ms/f=6.3  taskdefined: flips= 0 viol_frames=  0 tip_mm=  0.1 margin=0.30 ms/f=1.5
+[x6] wrote results/x6/v4_left.json
+[x6] TOTAL fidelity: 636 flips across 6 reps, 4/6 reps had a limit violation
+[x6] TOTAL fidelity_reg: 417 flips across 6 reps, 5/6 reps had a limit violation
+[x6] TOTAL taskcentric: 85 flips across 6 reps, 5/6 reps had a limit violation
+[x6] TOTAL taskdefined: 15 flips across 6 reps, 0/6 reps had a limit violation

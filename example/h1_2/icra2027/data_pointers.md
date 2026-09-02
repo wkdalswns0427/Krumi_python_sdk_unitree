@@ -8,12 +8,15 @@ truth for `ACTIVE_DATA_ROOT` (which all drivers import).
 ## Sensor pivot (2026-08-25)
 
 Capture switched from **iPhone LiDAR on tripod** (IROS) to **ZED depth
-camera at the robot neck** (ICRA). Confirmed with user 2026-08-25:
+camera at the robot neck** (ICRA). Confirmed 2026-08-25, refined 2026-08-26
+(see `notes/decisions.md`):
 
-- Skeleton source: **ZED RGB + depth → MediaPipe** (reuses the existing
-  `bag_to_joints.py` pipeline; only the input reader changes).
-- Camera motion: **robot standing still** during capture; ZED-to-base
-  extrinsic is fixed for the whole session.
+- Skeleton source: **ZED SDK body tracking, BODY_38**, via
+  `src/zed/zed_to_joints.py` (3D-native; NOT the RGB->MediaPipe path the
+  2026-08-25 note first assumed).
+- Capture format: **SVO2**, one file per capture, recorded while streaming.
+- Camera motion: **robot standing still** during capture; the ZED-to-torso
+  extrinsic (D1 below) is fixed for the whole session.
 - Pick-and-stack (F-c evidence): to be **re-captured with the ZED** so
   the paper does not mix sensors.
 
@@ -25,20 +28,27 @@ sensing discipline is superseded by this pivot.
 - **Root (planned):** `~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/zed_data/<session>/`
   (exact folder name TBD; register it in `src/common/data_paths.py::ZED_DATA_ROOT`
   and flip `ACTIVE_DATA_ROOT` when the first session lands).
-- **Capture format:** TBD (ZED SDK SVO file, or ROS2 bag via
-  `zed-ros2-wrapper` at `~/mj_ws/zed/zed_ws/src/zed-ros2-wrapper`).
-  `../experiments/scripts/bag_to_joints.py` already handles `rosbag`
-  input for the D435i pipeline; a small topic-name tweak likely
-  suffices for a ZED bag. SVO input needs a new reader (ZED SDK Python
-  API required).
+- **Capture format:** **SVO2**, one file per capture, read by
+  `src/zed/zed_to_joints.py` (built; the ZED SDK Python reader). The
+  ROS2-bag path via `zed-ros2-wrapper` is not used.
 - **Per-capture output must be:** `<capture>/b2g/<name>.csv` with schema
-  `frame,joint,x,y,z,conf` (metres, MediaPipe person-oriented world frame).
-  If the ZED path produces a different filename, update
+  `frame,joint,x,y,z,conf` (metres, ZED RIGHT_HANDED_Z_UP_X_FWD frame:
+  x forward, z up). If the ZED path produces a different filename, update
   `src/common/data_paths.py::JOINTS_CSV_REL`.
-- **Extrinsic calibration** to the H1-2 base is required now (previously
-  the plan's "D1" was optional). One session with the robot standing
-  still and a checkerboard visible in the ZED view is enough; sanity-
-  check against a lowstate-anchored reference target.
+- **D1 extrinsic (ZED optical -> torso_link):** done 2026-08-28, accepted at
+  about 9 mm and 1.2 deg. Solved by hand-eye calibration
+  (`src/zed/zed_extrinsic_capture.py` then `zed_extrinsic_solve.py`), stored at
+  `results/extrinsic/zed_to_torso.yaml`. It is used only to co-visualize the
+  human and robot in one scene. The retargeting works on directions in the
+  human's own frame, so no result depends on it, which is why 9 mm is fine.
+  The residual floor is kinematic (URDF vs the real arm), not fixable by more
+  poses. Not yet wired into `zed_realtime_node.py`, which still uses an identity
+  `world->frame` placeholder.
+- **Skeleton sanity check** (Gate 2): before committing the session, compare
+  the BODY_38 wrist paths against the iPhone baseline with
+  `src/zed/skeleton_quality.py <zed>.csv --compare <iphone>/iph_mono.csv
+  --fps 60 --compare-fps 30`. iPhone baseline (M2/M3, 2026-08-27): wrist
+  dropout 0.1-8.8% (left wrist worse), jitter 3-10 mm at reach ~0.45-0.50 m.
 
 ## Human captures (iPhone LiDAR, IROS-era, retained for reference)
 
@@ -66,11 +76,21 @@ Produced by:
     --mode mono --stride 2 --out <capture_dir>/b2g/<name>.csv
 ```
 
-Frozen depth policy: `--depth-policy relaxed-limb` (default). Note that
-this policy was tuned on the iPhone LiDAR depth stream (confidence 0/1/2
-per pixel); the ZED depth stream carries a different confidence model
-(per-pixel depth quality + neural confidence), so the policy thresholds
-must be re-evaluated on the first ZED capture before it is trusted.
+Frozen depth policy: `--depth-policy relaxed-limb` (default). This applies
+to the **iPhone MediaPipe path only**. As of 2026-08-26 the ZED captures use
+ZED SDK body tracking (BODY_38) via `src/zed/zed_to_joints.py`, which returns
+3D keypoints directly and never samples a depth patch per keypoint, so no
+depth policy applies to them and nothing needs re-tuning. Produce ZED joints
+with:
+
+```bash
+/usr/bin/python3 src/zed/zed_to_joints.py <capture>.svo2 \
+    --out <capture_dir>/b2g/<name>.csv --min-conf 20
+```
+
+`--min-conf` is the ZED SDK body-detection threshold on a 0-100 scale; 20
+rather than the default 40. Per-keypoint confidence is rescaled to 0-1 in the
+emitted CSV, matching the schema `retarget_arm.py` reads.
 
 ## Retargeted trajectories from IROS (reference; not directly consumed)
 
@@ -116,12 +136,12 @@ Key joint limits (relevant to the flip / violation story):
    `~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/zed_data/2026-08-XX/`.
 2. Save raw ZED capture (SVO or ROS2 bag) inside each per-capture
    subfolder, e.g. `zed_data/2026-08-XX/M1_R_1/`.
-3. Produce `b2g/<name>.csv` per capture via `bag_to_joints.py` (adapted
-   for ZED input).
+3. Produce `b2g/<name>.csv` per capture via
+   `src/zed/zed_to_joints.py <capture>.svo2 --out <capture>/b2g/<name>.csv --min-conf 20`.
 4. Set `src/common/data_paths.py::ZED_DATA_ROOT` to the session folder
    and set `ACTIVE_DATA_ROOT = ZED_DATA_ROOT`.
 5. If the joints CSV filename differs from `iph_mono.csv`, update
    `JOINTS_CSV_REL` in the same file.
-6. Re-run X6, X2, B2, X1 — the `--captures` default in each driver is
-   still M1_R_*/M2_*/M3_*; pass different names via CLI if the ZED
-   session uses different folder names.
+6. Re-run everything with `./rerun_all.sh` (X6, X2, X8, B2, B3, X10,
+   strawman, X1); pass capture names if the ZED session uses different
+   folder names.

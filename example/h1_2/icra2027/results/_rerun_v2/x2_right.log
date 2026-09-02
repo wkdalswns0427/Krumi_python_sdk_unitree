@@ -1,0 +1,27 @@
+[x2]   M1_1: fid_margin=0.468  task_margin=0.478  fid_manip=0.240  task_manip=0.237  viol_fid=False  viol_task=False
+[x2]   M1_2: fid_margin=0.456  task_margin=0.474  fid_manip=0.235  task_manip=0.230  viol_fid=False  viol_task=False
+[x2]   M1_3: fid_margin=0.410  task_margin=0.388  fid_manip=0.216  task_manip=0.207  viol_fid=False  viol_task=False
+[x2]   M1_4: fid_margin=0.421  task_margin=0.397  fid_manip=0.213  task_manip=0.209  viol_fid=False  viol_task=False
+[x2]   M1_5: fid_margin=0.470  task_margin=0.323  fid_manip=0.253  task_manip=0.249  viol_fid=False  viol_task=False
+[x2]   M2_1: fid_margin=0.274  task_margin=0.530  fid_manip=0.174  task_manip=0.170  viol_fid=True   viol_task=False
+[x2]   M2_2: fid_margin=0.166  task_margin=0.499  fid_manip=0.175  task_manip=0.174  viol_fid=True   viol_task=False
+[x2]   M2_3: fid_margin=0.189  task_margin=0.439  fid_manip=0.194  task_manip=0.195  viol_fid=True   viol_task=True 
+[x2]   M2_4: fid_margin=0.117  task_margin=0.472  fid_manip=0.200  task_manip=0.201  viol_fid=True   viol_task=False
+[x2]   M2_5: fid_margin=0.163  task_margin=0.450  fid_manip=0.170  task_manip=0.176  viol_fid=True   viol_task=True 
+[x2]   M3_1: fid_margin=0.207  task_margin=0.483  fid_manip=0.227  task_manip=0.229  viol_fid=True   viol_task=False
+[x2]   M3_2: fid_margin=0.165  task_margin=0.489  fid_manip=0.219  task_manip=0.216  viol_fid=True   viol_task=False
+[x2]   M3_3: fid_margin=0.222  task_margin=0.496  fid_manip=0.219  task_manip=0.220  viol_fid=True   viol_task=False
+[x2]   M3_4: fid_margin=0.134  task_margin=0.493  fid_manip=0.197  task_manip=0.196  viol_fid=True   viol_task=False
+[x2]   M3_5: fid_margin=0.120  task_margin=0.488  fid_manip=0.190  task_manip=0.184  viol_fid=True   viol_task=False
+[x2]   M4_1: fid_margin=0.268  task_margin=0.456  fid_manip=0.160  task_manip=0.151  viol_fid=True   viol_task=False
+[x2]   M4_2: fid_margin=0.300  task_margin=0.446  fid_manip=0.181  task_manip=0.181  viol_fid=True   viol_task=False
+[x2]   M4_3: fid_margin=0.171  task_margin=0.464  fid_manip=0.149  task_manip=0.138  viol_fid=True   viol_task=False
+[x2]   M4_4: fid_margin=0.217  task_margin=0.492  fid_manip=0.166  task_manip=0.156  viol_fid=True   viol_task=False
+[x2]   M4_5: fid_margin=0.331  task_margin=0.490  fid_manip=0.190  task_manip=0.183  viol_fid=True   viol_task=True 
+[x2]   M5_1: fid_margin=0.136  task_margin=0.304  fid_manip=0.119  task_manip=0.109  viol_fid=True   viol_task=True 
+[x2]   M5_2: fid_margin=0.053  task_margin=0.319  fid_manip=0.145  task_manip=0.155  viol_fid=True   viol_task=True 
+[x2]   M5_3: fid_margin=0.178  task_margin=0.370  fid_manip=0.161  task_manip=0.162  viol_fid=True   viol_task=True 
+[x2]   M5_4: fid_margin=0.026  task_margin=0.410  fid_manip=0.175  task_manip=0.170  viol_fid=True   viol_task=True 
+[x2]   M5_5: fid_margin=0.263  task_margin=0.319  fid_manip=0.153  task_manip=0.145  viol_fid=True   viol_task=True 
+[x2] wrote results/x2/v2_right.json
+[x2] TOTAL: 20/25 fid-violation reps, 8/25 task-violation reps

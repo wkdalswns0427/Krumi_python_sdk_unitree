@@ -1,0 +1,10 @@
+[x1] SKIP M1_R_1: no joints CSV at /home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/zed_data/2026-08-29/M1_R_1.csv
+[x1] SKIP M1_R_2: no joints CSV at /home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/zed_data/2026-08-29/M1_R_2.csv
+[x1] SKIP M1_R_3: no joints CSV at /home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/zed_data/2026-08-29/M1_R_3.csv
+[x1] STATUS: preview run on OLD captures; refilm is a prerequisite.
+[x1]     M2_1: exec_s=14.48  center_len_m=13.41  work_proxy_J= 5333.9
+[x1]     M2_2: exec_s=16.72  center_len_m=15.22  work_proxy_J= 6115.5
+[x1]     M2_3: exec_s=15.95  center_len_m=18.04  work_proxy_J= 7058.8
+[x1]     M3_1: exec_s=21.57  center_len_m=17.36  work_proxy_J= 7171.8
+[x1]     M3_2: exec_s=22.08  center_len_m=18.65  work_proxy_J= 7837.3
+[x1]     M3_3: exec_s=23.95  center_len_m=21.22  work_proxy_J= 8978.9

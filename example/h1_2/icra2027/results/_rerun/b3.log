@@ -1,0 +1,9 @@
+[b3] h2o-keypoint     flips=2266  viol=10/10  margin=0.242  manip=0.221  tip_mm=31.86  appr_deg=10.6
+[b3] okami-gain1.0    flips=2270  viol=10/10  margin=0.256  manip=0.225  tip_mm=8.37  appr_deg=6.7
+[b3] okami-gain0.1    flips=312  viol=10/10  margin=0.181  manip=0.224  tip_mm=3.93  appr_deg=26.6
+[b3] okami-gain0.01   flips=121  viol=3/10  margin=0.376  manip=0.218  tip_mm=0.69  appr_deg=25.9
+[b3] okami-gain0.001  flips=109  viol=3/10  margin=0.379  manip=0.218  tip_mm=0.69  appr_deg=26.5
+[b3] b1-naive         flips=2545  viol=10/10  margin=0.304  manip=0.224  tip_mm=11.63  appr_deg=2.6
+[b3] b1-iros-reg      flips=1616  viol=10/10  margin=0.141  manip=0.207  tip_mm=86.98  appr_deg=24.4
+[b3] taskcentric      flips=340  viol=2/10  margin=0.444  manip=0.224  tip_mm=0.60  appr_deg=39.4
+[b3] wrote results/b3/zed.json and results/b3/zed.csv

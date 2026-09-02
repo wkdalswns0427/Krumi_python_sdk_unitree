@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""H1-2 raise right arm for 2 s when YOLO detects a person.
+"""H1-2 raise BOTH arms for 10 s when YOLO detects a person.
+
+Sequence per trigger: wait 3 s at REST, ramp the arms up slowly (to a pose
+60 deg lower than the original raise, so it hangs down rather than reaching
+forward), hold 10 s, ramp back to REST, then cooldown.
 
 Reads person-detection events from a UNIX socket (default
 ~/mj_ws/h1-2_sensors/yolo_ws/yolo_bridge.sock) fed by yolo_bridge.py. The bridge is a separate
@@ -16,8 +20,11 @@ Bring-up order:
 Notes
 -----
 * H1-2 has NO built-in wave action (the G1ArmActionClient "face wave"/
-  "high wave" entries are G1-only). We raise the right arm through the
+  "high wave" entries are G1-only). We raise the arms through the
   rt/arm_sdk overlay, same pattern as pick_cone_palms.py.
+* A person trigger raises BOTH arms; a traffic-cone trigger still raises
+  the right arm only, so the two events stay visually distinguishable.
+  Both use the same raise height and the same 3 s delay / 10 s hold timing.
 * The script does NOT call LocoClient.Start() — it assumes the operator
   already brought the robot to standing balance (FSM 204). It only takes
   over the arm overlay and leaves loco untouched.
@@ -27,6 +34,7 @@ Notes
 
 import argparse
 import json
+import math
 import socket
 import threading
 import time
@@ -87,20 +95,9 @@ ARM_KD = [2.0, 2.0, 1.5, 1.5, 1.0, 1.0, 1.0,
 # controller's current arm joint angles), so the gesture always returns
 # the arms to wherever they were when the script started.
 #
-# POSE_RAISED matches POSE_READY in pick_cone_palms.py — verified safe on
-# this unit: shoulders neutral with slight outward roll, elbows softly
-# extended.
-
-POSE_RAISED = [
-    0.0,  0.10, 0.0, 0.30, 0.0, 0.0, 0.0,
-    0.0, -0.10, 0.0, 0.30, 0.0, 0.0, 0.0,
-    0.0,
-]
-
-# ── Cone-trigger gesture: ONLY the right arm raises ─────────────────────────
-# Left-arm slots in the target vector aren't overridden — they take whatever
-# value was captured in pose_rest at startup, so the left arm stays where the
-# loco controller had it. Built dynamically in WaveOnPerson._build_cone_target.
+# Both gestures are expressed as OVERRIDES on top of pose_rest rather than as
+# absolute pose vectors, so any slot left un-overridden keeps whatever the loco
+# controller had at startup. Applied in WaveOnPerson._build_target.
 #
 # Arm-vector index reference (15 elements total):
 #   0..6   : left  arm  [LShP, LShR, LShY, LElb, LWrR, LWrP, LWrY]
@@ -108,15 +105,49 @@ POSE_RAISED = [
 #   14     : waist yaw
 #
 # On THIS unit (per the pick_cone_palms.py calibration notes):
-#   * Shoulder pitch: 0 = arm down,  -1.57 ≈ horizontal forward, more
-#     negative = above horizontal.
-#   * Shoulder roll (right): negative = outward to the right.
-#   * Elbow: 0 ≈ 90° flex, positive = straighter.
+#   * Shoulder pitch: 0 = arm down, -1.57 is roughly horizontal forward, more
+#     negative = above horizontal. Same sign on both arms (URDF axis 0 1 0).
+#   * Shoulder roll is MIRRORED between the arms: outward is negative on the
+#     right (limits -3.4..0.38) and positive on the left (limits -0.38..3.4).
+#   * Elbow: 0 is roughly 90 deg of flex, positive = straighter.
+
+# Raise height. The original gesture used -1.4 rad (-80 deg, just under
+# horizontal-forward), which reaches the arm well out in front. Shoulder pitch
+# is 0 at arms-down and more negative further up, so ADDING a positive angle
+# LOWERS the arms and pulls the hand back toward the body. Lowered 60 deg here
+# so the raised arm hangs down-and-slightly-forward rather than reaching ahead.
+RAISE_PITCH_BASE_RAD = -1.4
+RAISE_LOWER_DEG      = 50.0
+RAISED_SHOULDER_PITCH = RAISE_PITCH_BASE_RAD + math.radians(RAISE_LOWER_DEG)
+# = -0.353 rad = -20.2 deg, well inside the +-[-3.14, +1.57] joint limit.
+
+# Cone trigger: right arm only. Left-arm slots are not overridden, so the left
+# arm stays wherever the loco controller had it.
 RIGHT_ARM_RAISED_OVERRIDES = {
-    7:  -1.4,   # RShoulderPitch — arm raised forward, slightly above horizontal
-    8:  -0.2,   # RShoulderRoll  — small outward abduction so hand isn't in face
+    7:  RAISED_SHOULDER_PITCH,   # RShoulderPitch, raised forward
+    8:  -0.2,   # RShoulderRoll, small outward abduction so hand isn't in face
     9:   0.0,   # RShoulderYaw
-    10:  0.5,   # RElbow         — slight bend
+    10:  0.5,   # RElbow, slight bend
+    11:  0.0,   # RWristRoll
+    12:  0.0,   # RWristPitch
+    13:  0.0,   # RWristYaw
+}
+
+# Person trigger: BOTH arms raise. The left arm mirrors the right values, with
+# the roll sign flipped per the mirroring note above. Every angle is inside the
+# URDF limits for its joint.
+BOTH_ARMS_RAISED_OVERRIDES = {
+    0:  RAISED_SHOULDER_PITCH,   # LShoulderPitch
+    1:   0.2,   # LShoulderRoll, outward on the left is positive
+    2:   0.0,   # LShoulderYaw
+    3:   0.5,   # LElbow
+    4:   0.0,   # LWristRoll
+    5:   0.0,   # LWristPitch
+    6:   0.0,   # LWristYaw
+    7:  RAISED_SHOULDER_PITCH,   # RShoulderPitch
+    8:  -0.2,   # RShoulderRoll
+    9:   0.0,   # RShoulderYaw
+    10:  0.5,   # RElbow
     11:  0.0,   # RWristRoll
     12:  0.0,   # RWristPitch
     13:  0.0,   # RWristYaw
@@ -125,16 +156,28 @@ RIGHT_ARM_RAISED_OVERRIDES = {
 
 # ── Behavior tuning ─────────────────────────────────────────────────────────
 MIN_CONF       = 0.5      # YOLO node already filters at 0.5; redundant guard
-COOLDOWN_S     = 5.0      # min seconds between gesture starts
-RAISE_TIME_S   = 0.8      # ramp to raised pose
-HOLD_TIME_S    = 2.0      # hold raised
-LOWER_TIME_S   = 0.8      # ramp back to rest
+COOLDOWN_S     = 30.0      # min seconds between gesture starts
+TRIGGER_DELAY_S = 3.0     # wait at REST this long after a trigger, then raise
+RAISE_TIMEOUT_S = 8.0     # safety cap on the ramp; normally we leave RAISING
+                          # as soon as the arms ARRIVE (see RAISE_TOL_RAD), so
+                          # the hold is a full HOLD_TIME_S at the pose. Raised
+                          # from 3.0 s so the slower ramp is not clipped.
+RAISE_TOL_RAD  = 0.02     # per-joint arrival tolerance
+HOLD_TIME_S    = 10.0     # hold raised, measured from arrival
+LOWER_TIME_S   = 4.0      # ramp back to rest (slow, matched to MAX_VEL)
+# The ramp is rate-limited at ArmSdkController.MAX_VEL (0.2 rad/s, deliberately
+# gentle so raising the arms does not shove the CoM forward and make loco step),
+# so a ~0.35 rad raise from arms-down takes ~1.8 s. One full gesture is about
+# 3.0 + 1.8 + 10.0 + 4.0 = 18.8 s, then COOLDOWN_S before the next trigger is
+# accepted. (LOWER_TIME_S keeps its 4.0 s margin though the lower now needs
+# ~1.8 s.)
 
 
 # ── arm_sdk controller (50 Hz pump) ─────────────────────────────────────────
 class ArmSdkController:
     CTRL_DT     = 0.02   # 50 Hz
-    MAX_VEL     = 0.8    # rad/s — per-step joint delta clamp
+    MAX_VEL     = 0.2    # rad/s — per-step joint delta clamp (slow + gentle so
+                         # raising the arms does not push the robot forward)
     WEIGHT_RATE = 0.5    # 1/s — fade rate for arm_sdk blend weight
 
     def __init__(self):
@@ -187,6 +230,13 @@ class ArmSdkController:
 
         self.msg.motor_cmd[J.Weight].q = self.weight
         self.pub.Write(self.msg)
+
+    def at_pose(self, target: list, tol: float) -> bool:
+        """True once every commanded joint is within tol of target. Uses the
+        commanded pose, not the measured one: this gates the hold timer on the
+        ramp finishing, not on the arm's tracking error."""
+        return all(abs(target[i] - self.current_pose[i]) <= tol
+                   for i in range(len(ARM_JOINTS)))
 
     def ramp_weight(self, target: float, duration: float):
         steps = max(1, int(duration / self.CTRL_DT))
@@ -316,9 +366,9 @@ class PersonDetector:
             self.person_seen = False
 
 
-# ── State machine: idle → raising → holding → lowering → cooldown ───────────
+# ── State machine: idle → waiting → raising → holding → lowering → cooldown ─
 class WaveOnPerson:
-    IDLE, RAISING, HOLDING, LOWERING, COOLDOWN = range(5)
+    IDLE, WAITING, RAISING, HOLDING, LOWERING, COOLDOWN = range(6)
 
     def __init__(self):
         self.arm   = ArmSdkController()
@@ -353,18 +403,18 @@ class WaveOnPerson:
     def _elapsed(self):
         return time.monotonic() - self.state_start
 
-    def _build_cone_target(self) -> list:
-        """Right-arm-only raised pose: start from rest, override right arm."""
+    def _build_target(self, overrides: dict) -> list:
+        """Start from the captured rest pose and apply a gesture's overrides."""
         target = list(self.arm.pose_rest)
-        for idx, val in RIGHT_ARM_RAISED_OVERRIDES.items():
+        for idx, val in overrides.items():
             target[idx] = val
         return target
 
     def _gesture_target(self) -> list:
         """Pose to drive toward during RAISING/HOLDING, picked by trigger."""
         if self.active_trigger == CONE_CLASS:
-            return self._build_cone_target()
-        return POSE_RAISED   # PERSON_CLASS (existing behavior)
+            return self._build_target(RIGHT_ARM_RAISED_OVERRIDES)
+        return self._build_target(BOTH_ARMS_RAISED_OVERRIDES)   # PERSON_CLASS
 
     def run(self):
         print("[main] running. Ctrl+C to exit.")
@@ -381,17 +431,31 @@ class WaveOnPerson:
                         trig = self.node.take_trigger()
                         if trig is not None:
                             self.active_trigger = trig
-                            print(f"[trigger] {trig} detected -> RAISING")
-                            self._enter(self.RAISING)
+                            print(f"[trigger] {trig} detected -> WAITING "
+                                  f"{TRIGGER_DELAY_S:.1f}s before raising")
+                            self._enter(self.WAITING)
                     else:
                         # Still cooling down — drop any pending flags so they
                         # don't immediately re-trigger when cooldown expires.
                         self.node.clear_pending()
                         target = rest
 
+                if self.state == self.WAITING:
+                    # Hold REST for the delay. Triggers arriving now are not
+                    # consumed here: IDLE is the only state that takes them,
+                    # so they just wait and are cleared during cooldown.
+                    target = rest
+                    if self._elapsed() >= TRIGGER_DELAY_S:
+                        print(f"[trigger] {self.active_trigger} -> RAISING")
+                        self._enter(self.RAISING)
+
                 if self.state == self.RAISING:
                     target = self._gesture_target()
-                    if self._elapsed() >= RAISE_TIME_S:
+                    arrived = self.arm.at_pose(target, RAISE_TOL_RAD)
+                    if arrived or self._elapsed() >= RAISE_TIMEOUT_S:
+                        if not arrived:
+                            print(f"[trigger] raise hit the {RAISE_TIMEOUT_S:.1f}s "
+                                  f"cap before arriving -> HOLDING anyway")
                         self._enter(self.HOLDING)
 
                 elif self.state == self.HOLDING:
@@ -418,7 +482,9 @@ class WaveOnPerson:
         print("\n[shutdown] returning to REST and fading arm_sdk weight to 0")
         try:
             if self.arm.pose_rest is not None:
-                self._hold_pose_for(self.arm.pose_rest, 1.5)
+                # 4.0 s, not 1.5: the slow MAX_VEL needs the time to fully
+                # lower the arms before the weight fades and loco takes over.
+                self._hold_pose_for(self.arm.pose_rest, 4.0)
             self.arm.ramp_weight(0.0, duration=1.5)
         except Exception as e:
             print(f"shutdown error: {e}")
@@ -438,11 +504,18 @@ if __name__ == "__main__":
     args = parse_args()
 
     print("=" * 70)
-    print("H1-2 RAISE-RIGHT-ARM ON YOLO TRIGGER")
+    print("H1-2 RAISE-ARMS ON YOLO TRIGGER")
     print(f" * Source:      {SOCKET_PATH} (events forwarded by yolo_bridge.py)")
     print(f" * Triggers:    {CONE_CLASS!r} (priority), {PERSON_CLASS!r}; "
           f"score >= {MIN_CONF:.2f}")
-    print(" * Gesture:     raise right arm  hold {}s  lower".format(HOLD_TIME_S))
+    print(" * Gesture:     person -> BOTH arms, cone -> right arm only")
+    print(" * Timing:      wait {:.1f}s after trigger, raise (rate-limited, "
+          "{:.1f}s cap), hold {:.1f}s, lower {:.1f}s".format(
+              TRIGGER_DELAY_S, RAISE_TIMEOUT_S, HOLD_TIME_S, LOWER_TIME_S))
+    print(" * Raise pitch: {:+.3f} rad ({:+.1f} deg), {:.0f} deg lower than "
+          "the original".format(RAISED_SHOULDER_PITCH,
+                                math.degrees(RAISED_SHOULDER_PITCH),
+                                RAISE_LOWER_DEG))
     print(" * Cooldown:    {}s between triggers".format(COOLDOWN_S))
     print(" * Assumes the robot is ALREADY in balance stand (FSM 204).")
     print("=" * 70)

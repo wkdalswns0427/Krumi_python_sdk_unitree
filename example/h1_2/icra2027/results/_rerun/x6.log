@@ -1,0 +1,13 @@
+[x6]   M2_1 side=right  fidelity: flips=246 viol_frames= 46 tip_mm=  2.4 margin=0.41 ms/f=1.7  taskcentric: flips=20 viol_frames=  0 tip_mm=  0.2 margin=0.54 ms/f=5.7
+[x6]   M2_2 side=right  fidelity: flips=270 viol_frames= 70 tip_mm=  2.6 margin=0.35 ms/f=1.7  taskcentric: flips=28 viol_frames=  0 tip_mm=  0.3 margin=0.50 ms/f=6.4
+[x6]   M2_3 side=right  fidelity: flips=262 viol_frames= 27 tip_mm=  3.1 margin=0.33 ms/f=1.6  taskcentric: flips=26 viol_frames=123 tip_mm=  3.3 margin=0.25 ms/f=10.2
+[x6]   M2_4 side=right  fidelity: flips=279 viol_frames= 37 tip_mm=  3.8 margin=0.30 ms/f=1.7  taskcentric: flips=18 viol_frames=  0 tip_mm=  0.1 margin=0.49 ms/f=3.0
+[x6]   M2_5 side=right  fidelity: flips=238 viol_frames=176 tip_mm= 11.3 margin=0.25 ms/f=2.2  taskcentric: flips=33 viol_frames= 12 tip_mm=  0.9 margin=0.45 ms/f=8.8
+[x6]   M3_1 side=right  fidelity: flips=147 viol_frames=545 tip_mm= 65.7 margin=0.10 ms/f=2.9  taskcentric: flips=45 viol_frames=  0 tip_mm=  0.3 margin=0.44 ms/f=5.7
+[x6]   M3_2 side=right  fidelity: flips=242 viol_frames= 83 tip_mm=  4.0 margin=0.36 ms/f=1.7  taskcentric: flips=35 viol_frames=  0 tip_mm=  0.1 margin=0.44 ms/f=3.4
+[x6]   M3_3 side=right  fidelity: flips=279 viol_frames=221 tip_mm= 16.9 margin=0.29 ms/f=2.0  taskcentric: flips=42 viol_frames=  0 tip_mm=  0.2 margin=0.45 ms/f=4.0
+[x6]   M3_4 side=right  fidelity: flips=286 viol_frames=132 tip_mm=  3.6 margin=0.31 ms/f=1.8  taskcentric: flips=53 viol_frames=  0 tip_mm=  0.3 margin=0.44 ms/f=6.3
+[x6]   M3_5 side=right  fidelity: flips=296 viol_frames=116 tip_mm=  2.9 margin=0.34 ms/f=1.8  taskcentric: flips=40 viol_frames=  0 tip_mm=  0.3 margin=0.44 ms/f=6.0
+[x6] wrote results/x6/zed.json
+[x6] TOTAL fidelity: 2545 flips across 10 reps, 10/10 reps had a limit violation
+[x6] TOTAL taskcentric: 340 flips across 10 reps, 2/10 reps had a limit violation

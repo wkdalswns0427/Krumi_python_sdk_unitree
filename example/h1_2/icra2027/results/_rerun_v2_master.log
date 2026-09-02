@@ -1,0 +1,62 @@
+sides: right left
+captures: 25 motion, 20 sweep
+================ SIDE: right ================
+--- x6_right ---
+[x6] TOTAL fidelity_reg: 1961 flips across 25 reps, 19/25 reps had a limit violation
+[x6] TOTAL taskcentric: 678 flips across 25 reps, 9/25 reps had a limit violation
+[x6] TOTAL taskdefined: 411 flips across 25 reps, 6/25 reps had a limit violation
+--- x2_right ---
+[x2]   M5_5: fid_margin=0.285  task_margin=0.313  fid_manip=0.173  task_manip=0.166  viol_fid=True   viol_task=True 
+[x2] wrote results/x2/v2_right.json
+[x2] TOTAL: 20/25 fid-violation reps, 9/25 task-violation reps
+--- b2_right ---
+[b2]   M5_5: flips=65  viol_frames= 11  tip_mm= 2.0  approach_deg= 39.5  margin=0.31
+[b2] wrote results/b2/v2_right.json
+[b2] TOTAL: 693 flips across 25 reps, 9/25 reps had a violation
+--- b3_right ---
+[b3] b1-iros-reg      flips=2083  viol=19/25  margin=0.321  manip=0.209  tip_mm=23.15  appr_deg=5.3
+[b3] taskcentric      flips=678  viol=9/25  margin=0.417  manip=0.208  tip_mm=1.54  appr_deg=38.1
+[b3] wrote results/b3/v2_right.json and results/b3/v2_right.csv
+--- x8_right ---
+  at posture OFF (1e-3 gain)  limits OFF 0.347 -> w=0.50 0.599   limit avoidance buys +0.253
+
+wrote results/b3/factorial_v2_right.json  (n=25 captures)
+--- x10_right ---
+
+gate source: detected  (annotated > detected; see open_questions item 5)
+wrote results/x10/v2_right.json
+--- x9_right ---
+d4       5    0.609   99.8       5/5          5/5          0/5      0.292      0.378
+
+wrote results/reach_extent/v2_right.json
+================ SIDE: left ================
+--- x6_left ---
+[x6] TOTAL fidelity_reg: 888 flips across 25 reps, 9/25 reps had a limit violation
+[x6] TOTAL taskcentric: 87 flips across 25 reps, 9/25 reps had a limit violation
+[x6] TOTAL taskdefined: 55 flips across 25 reps, 5/25 reps had a limit violation
+--- x2_left ---
+[x2]   M5_5: fid_margin=0.438  task_margin=0.483  fid_manip=0.258  task_manip=0.260  viol_fid=False  viol_task=False
+[x2] wrote results/x2/v2_left.json
+[x2] TOTAL: 9/25 fid-violation reps, 9/25 task-violation reps
+--- b2_left ---
+[b2]   M5_5: flips= 1  viol_frames=  0  tip_mm= 0.1  approach_deg= 11.1  margin=0.48
+[b2] wrote results/b2/v2_left.json
+[b2] TOTAL: 88 flips across 25 reps, 9/25 reps had a violation
+--- b3_left ---
+[b3] b1-iros-reg      flips=893  viol=9/25  margin=0.317  manip=0.232  tip_mm=4.14  appr_deg=1.1
+[b3] taskcentric      flips= 87  viol=9/25  margin=0.341  manip=0.236  tip_mm=0.60  appr_deg=19.1
+[b3] wrote results/b3/v2_left.json and results/b3/v2_left.csv
+--- x8_left ---
+  at posture OFF (1e-3 gain)  limits OFF 0.252 -> w=0.50 0.445   limit avoidance buys +0.193
+
+wrote results/b3/factorial_v2_left.json  (n=25 captures)
+--- x10_left ---
+
+gate source: detected  (annotated > detected; see open_questions item 5)
+wrote results/x10/v2_left.json
+--- x9_left ---
+d4       5    0.508   83.8       0/5          0/5          0/5      0.412      0.441
+
+wrote results/reach_extent/v2_left.json
+
+done. logs in results/_rerun_v2/

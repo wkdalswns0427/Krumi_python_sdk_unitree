@@ -33,34 +33,59 @@ from common.fk import ArmChainFK, DEFAULT_URDF, load_limits_4  # noqa: E402
 from common.ik_baseline import solve_fidelity  # noqa: E402
 from common.ik_taskcentric import solve_taskcentric  # noqa: E402
 from common.human_directions import (  # noqa: E402
-    load_frames, per_frame_inputs, robot_scaled_wrist_target)
+    load_frames, per_frame_inputs, robot_scaled_wrist_target,
+    task_defined_wrist_target, human_extension_ratio)
 from common.metrics import flip_count, limit_violation, limit_margin  # noqa: E402
 from common.data_paths import ACTIVE_DATA_ROOT as DATA_ROOT, joints_csv_for  # noqa: E402
 
-METHODS = ("fidelity", "taskcentric")
+METHODS = ("fidelity", "fidelity_reg", "taskcentric", "taskdefined")
+# IROS-frozen yaw regularizer. This is the version our prior work shipped and
+# validated on hardware, so it is the fair fidelity baseline for X3.
+IROS_YAW_REG, IROS_YAW_NEUTRAL = 0.05, 0.02
+# retarget_arm.py: below this elbow flexion the swivel is unobservable, so the
+# IROS retargeter freezes shoulder yaw. Without it, yaw runs free on the
+# near-straight arms this dataset is full of.
+STRAIGHT_ARM_DEG = 12.0
 
 
-def solve_rep(joints_csv, side, urdf, fps=60.0, method="fidelity"):
+def solve_rep(joints_csv, side, urdf, fps=60.0, method="fidelity", ext_cap=0.88):
     fk = ArmChainFK(urdf, side)
     lims = load_limits_4(urdf)[side]
-    q_prev = np.array([0.30 if side == "right" else 0.31,
-                       -0.24 if side == "right" else 0.24,
-                       0.12 if side == "right" else -0.12,
-                       0.69 if side == "right" else 0.67])
+    q0 = np.array([0.30 if side == "right" else 0.31,
+                   -0.24 if side == "right" else 0.24,
+                   0.12 if side == "right" else -0.12,
+                   0.69 if side == "right" else 0.67])
+    q_prev = q0.copy()
     frames = load_frames(joints_csv, fps=fps)
+    rows = list(per_frame_inputs(frames, side, fps, with_flex=True))
+    # taskdefined re-sets the reach magnitude into the robot's usable band. The
+    # per-capture scale maps the whole reach profile rather than clipping only
+    # the far end, so the shape of the motion survives.
+    ext_scale = 1.0
+    if method == "taskdefined" and rows:
+        p95 = human_extension_ratio(fk, rows, q0)
+        ext_scale = (ext_cap / p95) if p95 > 1e-6 else 1.0
     ts, qs, tips_err, viols, margins, targets = [], [], [], [], [], []
     t_solve = 0.0
-    build_target = None
-    for t, u_hat, f_hat, _wrist_torso in per_frame_inputs(frames, side, fps):
-        if build_target is None:
+    for t, u_hat, f_hat, _wrist_torso, flex_deg in rows:
+        # Rebuild from THIS frame's directions. Hoisting this out of the
+        # loop freezes the target at frame 0, which makes the task-centric
+        # arm hold a pose instead of tracking the motion.
+        if method == "taskdefined":
+            build_target = task_defined_wrist_target(
+                fk, u_hat, f_hat, ext_scale=ext_scale, ext_cap=ext_cap)
+        else:
             build_target = robot_scaled_wrist_target(fk, u_hat, f_hat)
         target = build_target(q_prev)
         t0 = time.perf_counter()
-        if method == "fidelity":
+        if method in ("fidelity", "fidelity_reg"):
+            reg = method == "fidelity_reg"
             q, _res_deg, _clamp = solve_fidelity(
                 fk, u_hat, f_hat, q_prev, lims,
-                yaw_reg=0.0, yaw_neutral=0.0)
-        elif method == "taskcentric":
+                suppress_yaw=(reg and flex_deg < STRAIGHT_ARM_DEG),
+                yaw_reg=IROS_YAW_REG if reg else 0.0,
+                yaw_neutral=IROS_YAW_NEUTRAL if reg else 0.0)
+        elif method in ("taskcentric", "taskdefined"):
             q, _res_m, _it = solve_taskcentric(
                 fk, target, q_prev, lims,
                 lambda_limit=0.05, lambda_cont=0.02, lambda_manip=0.0)

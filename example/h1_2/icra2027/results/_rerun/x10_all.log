@@ -1,0 +1,12 @@
+/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra2027/src/x10_gated_approach.py:85: RuntimeWarning: Mean of empty slice
+  f"{np.nanmean([r['appr_on'] for r in rs]):>14.1f}"
+/home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra2027/src/x10_gated_approach.py:86: RuntimeWarning: Mean of empty slice
+  f"{np.nanmean([r['appr_off'] for r in rs]):>11.1f}"
+condition     margin   viol  tip_mm  appr@contact  appr@free  gate%
+--------------------------------------------------------------------
+free           0.399   12/25    6.77           nan       43.2    0.0
+gated          0.303   23/25   15.07           3.3       40.8   32.8
+always-on      0.238   23/25   42.33          10.8        nan  100.0
+
+gate source: detected  (annotated > detected; see open_questions item 5)
+wrote results/x10/zed_all25.json

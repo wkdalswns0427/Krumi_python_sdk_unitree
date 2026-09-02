@@ -1,14 +1,15 @@
 # ICRA 2027 — Robot-Specific Motion for Construction Humanoids
 
-**Handoff for future Claude sessions.** Read `PLAN.md` first — it is the
-canonical plan (verbatim from the user on 2026-08-25, with a sensor-pivot
-addendum). This file explains what the repo contains, what has been
+**Handoff for future Claude sessions.** Read `PLAN_v2.md` first — it is the
+the canonical plan, rewritten 2026-08-26 around the
+measurements of that day. The 2026-08-25 original was deleted; its
+provenance lives in the append-only `notes/decisions.md`. This file explains what the repo contains, what has been
 implemented, what has been preview-run on the OLD captures, and what still
 needs to happen.
 
 **Sensor pivot (2026-08-25):** capture switches from iPhone LiDAR on tripod
 (IROS) to ZED at the H1-2 neck (ICRA). ZED RGB + depth feed MediaPipe;
-robot stands still; pick-and-stack will be re-captured. `PLAN.md` addendum
+robot stands still; pick-and-stack will be re-captured. `PLAN_v2.md` addendum
 + `data_pointers.md` + `notes/decisions.md` are authoritative. All drivers
 route through `src/common/data_paths.py::ACTIVE_DATA_ROOT`, so switching
 the capture root is a one-line edit.
@@ -23,7 +24,7 @@ same question systematically: automated Robot-Specific generation across
 M1/M2/M3, with a mechanism explanation (joint-limit margin, branch flips,
 in the limit infeasibility) traced to the inherited human posture.
 
-Primary contributions per `PLAN.md`:
+Primary contributions per `PLAN_v2.md`:
 - **C2.** Automated Robot-Specific Motion generation across motions
   (was hand-designed for one sequence in IROS).
 - **C3.** The feasibility mechanism: fidelity retargeting leaves the arm
@@ -36,7 +37,7 @@ Primary contributions per `PLAN.md`:
 
 ```
 icra2027/
-├── PLAN.md          canonical plan (verbatim, read first)
+├── PLAN_v2.md       canonical plan, read first
 ├── README.md        this file
 ├── data_pointers.md exact paths to captures + processed outputs (no data dup)
 ├── src/
@@ -68,39 +69,59 @@ icra2027/
     └── open_questions.md             for advisor conversations
 ```
 
-## Preview status (2026-08-25)
+## Result status (2026-08-26)
 
-Scaffolding built and X6, X2, B2 preview-run on the OLD captures at
+Scaffolding built and X6, X2, B2 run on the OLD captures at
 `~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/experiments/iphone_data/MotionsDataset0713/`
 (M2_1..M2_3, M3_1..M3_3, right arm). These OLD numbers are **not** paper
 numbers — the plan calls for refilming the captures and rerunning
 before anything is reported. Preview numbers exist to prove the pipeline
 end-to-end.
 
-**Old-capture preview totals** (right arm, 6 reps M2+M3, iph_mono.csv):
+**A frozen-target bug invalidated every earlier preview run.** All four
+drivers built the wrist target once from frame 0 and never rebuilt it (on
+M2_1 the target moved 7.2 mm across 1280 frames), so the task-centric and
+DLS arms held a pose while the fidelity arm performed the motion. Fixed
+2026-08-26; see `notes/decisions.md`. The `results/*/preview.json` files are
+kept only for comparison and should be deleted once ZED numbers land.
 
-| Experiment | Metric | Fidelity | Task-centric / DLS |
-| --- | --- | --- | --- |
-| X6 | flips (yaw, > 6 rad/s) | 90 total | 0 total |
-| X6 | reps with limit violation | 4 / 6 | 0 / 6 |
-| X2 | mean limit margin | 0.24 | 0.30 |
-| X2 | reps with any violation | 4 / 6 | 0 / 6 |
-| B2 (DLS) | flips | — | 0 total |
-| B2 (DLS) | mean approach-dir err (deg) | — | ~40 (rep mean, not contact-only) |
+**Old-capture totals, FIXED drivers** (right arm, 6 reps M2+M3, iph_mono.csv,
+written to `results/{x6,x2,b2}/fixed.json`):
 
-Discrepancies vs the numbers cited in `PLAN.md` ("47 flips", "2 of 6 violation
-reps", "12 deg approach err at contact events") are expected: those numbers
-came from earlier work with a different capture set and different IK
-regularizer choices; this scaffold uses the NAIVE fidelity IK (no yaw_reg /
-yaw_neutral) so it reports the "before regularizers" baseline the paper
-argues against. The refilm + re-run will produce the paper numbers.
+| Experiment | Metric | Fidelity | Task-centric | B2 (DLS) |
+| --- | --- | --- | --- | --- |
+| X6 | flips (yaw, > 6 rad/s) | 90 total | 1 total | 1 total |
+| X6 | mean tip error | 0.2-0.7 mm | 0.07-0.14 mm | ~0.1 mm |
+| X2 | mean limit margin | 0.241 | 0.333 | 0.333 |
+| X2 | fidelity as % of task-optimal margin | 72.6% | — | — |
+| X2 | reps with any violation | 4 / 6 | 1 / 6 | 1 / 6 |
+| X2 | mean manipulability | 0.1975 | 0.2091 | — |
+| B2 | mean approach-dir err (deg) | — | — | 22.2 (median 18.2, rep mean) |
+
+Both conditions now reach the same wrist target to sub-millimetre, so "task
+held identical" is demonstrated rather than assumed, and F-a is won without
+dropping the task. These are still **not** paper numbers: they re-run on the
+ZED captures.
+
+Discrepancies vs `PLAN_v2.md` ("47 flips", "2 of 6 violation reps", "~45% margin",
+"12 deg approach err") are partly expected, because those came from earlier
+work with a different capture set and this scaffold uses the NAIVE fidelity IK
+(no yaw_reg / yaw_neutral). But two of them move the argument and are recorded
+in the 2026-08-26 addendum to `PLAN_v2.md`: C3 loses its categorical "0 of 6"
+headline (now 4/6 vs 1/6), and the margin gap is 72.6% rather than ~45%,
+vanishing entirely on M2_3.
+
+**C2 has no differentiator as currently coded.** `solve_taskcentric` and
+`solve_dls` agree on limit margin to 1e-4 across all six reps, with the same
+flip and violation counts, because `ik_taskcentric.py` has no
+approach-direction term. Implement it in `L_task` before X1 runs.
 
 Also: X1's preview center-length is implausibly small (0.00-0.02 m) on the
-old captures. This is because the retargeter treats each arm independently
-and the midpoint of two independent wrists stays near the shoulder midline.
-For the IROS pick-and-stack the two hands hold the same block so the
-midpoint is meaningful; for M1/M2/M3 as recorded, the midpoint metric may
-not be the right efficiency measure — see `notes/open_questions.md`.
+old captures, previously attributed to the retargeter treating each arm
+independently. The frozen target explains it at least as well, since no
+trajectory metric could have been non-trivial. Re-run X1 on the fixed
+drivers before treating the anomaly as evidence — see
+`notes/open_questions.md`.
 
 ## How to run
 
@@ -114,8 +135,9 @@ for the OLD captures; the refilm requires re-running it).
 cd ~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra2027
 
 # X6: does the objective flip fix flips?
-/usr/bin/python3 src/x6_taskcentric.py --side right
-# writes results/x6/preview.json + one CSV per (rep, method)
+/usr/bin/python3 src/x6_taskcentric.py --side right --out results/x6/fixed.json \
+    --frames-dir results/x6/fixed
+# writes the JSON summary + one CSV per (rep, method)
 
 # X2: what does fidelity cost, task held fixed?
 /usr/bin/python3 src/x2_costoffidelity.py --side right
@@ -149,20 +171,24 @@ cd ~/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra2027
 Ordered by the plan's critical path, updated for the ZED sensor pivot.
 
 0. **First ZED capture session logistics** (see `notes/open_questions.md` §0):
-   - Decide SVO vs ROS2 bag as the capture format.
+   - ~~Decide SVO vs ROS2 bag~~ **RESOLVED 2026-08-26: SVO2**, one file per
+     capture, recorded while streaming.
+   - ~~Skeleton source~~ **RESOLVED 2026-08-26: ZED SDK body tracking,
+     BODY_38**, via `src/zed/zed_to_joints.py`. Not MediaPipe.
+   - ~~Run `depth_policy_matrix.py`~~ **VOID**: no depth policy applies under
+     SDK body tracking, and that script does not exist.
    - Measure the ZED-to-torso_link extrinsic once (robot standing still,
-     checkerboard in view). Store in `data_pointers.md`.
-   - Run `depth_policy_matrix.py` on one throwaway capture and either
-     confirm or re-freeze `--depth-policy relaxed-limb` for the ZED
-     confidence distribution.
+     checkerboard in view). Store in `data_pointers.md`. **Still required.**
+   - Push one 30 s throwaway capture through the whole chain before the real
+     session: `zed_to_joints.py test.svo2 --out test.csv --min-conf 20` then
+     `visualize_joints.py test.csv --up z`.
 1. **Refilm M1, M2, M3 and the reach-extent sweep** with the ZED at the
-   robot neck, robot standing still (`PLAN.md` §Motion data + Addendum).
+   robot neck, robot standing still (`PLAN_v2.md` §Motion data + Addendum).
    Aug 15 deadline in the plan.
-2. **Reprocess** the refilmed captures with
-   `../experiments/scripts/bag_to_joints.py` (adapted for ZED input; the
-   `rosbag` path likely works with topic renames if capturing to a ROS2
-   bag). Output must land as `<capture>/b2g/<name>.csv` in the
-   `frame,joint,x,y,z,conf` schema.
+2. **Reprocess** the refilmed captures with `src/zed/zed_to_joints.py`
+   (SVO2 in, canonical CSV out). `bag_to_joints.py` is the MediaPipe path
+   and is not used for ZED captures. Output must land as
+   `<capture>/b2g/<name>.csv` in the `frame,joint,x,y,z,conf` schema.
 3. **Point the repo at the new captures.** Edit `src/common/data_paths.py`:
    set `ZED_DATA_ROOT` to the session folder, flip
    `ACTIVE_DATA_ROOT = ZED_DATA_ROOT`, and update `JOINTS_CSV_REL` if the
@@ -191,7 +217,7 @@ Ordered by the plan's critical path, updated for the ZED sensor pivot.
   captures the plan intends to replace.
 - Do not renumber X6/X2/X7/X1/X5 or B2. Filenames encode the plan's
   identifiers; renumbering breaks the traceability table.
-- Do not add a fourth construction task. `PLAN.md` explicitly says "ICRA
+- Do not add a fourth construction task. `PLAN_v2.md` explicitly says "ICRA
   should vary the quantity that causes the failure," which is the reach-
   extent sweep, not more task variety.
 - Do not resurrect the learned retargeter, the novel-solver claim, or

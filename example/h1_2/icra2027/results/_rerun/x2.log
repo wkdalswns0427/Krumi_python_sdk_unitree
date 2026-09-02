@@ -1,0 +1,12 @@
+[x2]   M2_1: fid_margin=0.409  task_margin=0.535  fid_manip=0.223  task_manip=0.220  viol_fid=True   viol_task=False
+[x2]   M2_2: fid_margin=0.353  task_margin=0.503  fid_manip=0.224  task_manip=0.219  viol_fid=True   viol_task=False
+[x2]   M2_3: fid_margin=0.326  task_margin=0.253  fid_manip=0.241  task_manip=0.237  viol_fid=True   viol_task=True 
+[x2]   M2_4: fid_margin=0.299  task_margin=0.488  fid_manip=0.248  task_manip=0.243  viol_fid=True   viol_task=False
+[x2]   M2_5: fid_margin=0.252  task_margin=0.454  fid_manip=0.213  task_manip=0.212  viol_fid=True   viol_task=True 
+[x2]   M3_1: fid_margin=0.104  task_margin=0.440  fid_manip=0.217  task_manip=0.227  viol_fid=True   viol_task=False
+[x2]   M3_2: fid_margin=0.357  task_margin=0.440  fid_manip=0.222  task_manip=0.227  viol_fid=True   viol_task=False
+[x2]   M3_3: fid_margin=0.287  task_margin=0.447  fid_manip=0.223  task_manip=0.229  viol_fid=True   viol_task=False
+[x2]   M3_4: fid_margin=0.314  task_margin=0.440  fid_manip=0.215  task_manip=0.214  viol_fid=True   viol_task=False
+[x2]   M3_5: fid_margin=0.342  task_margin=0.443  fid_manip=0.213  task_manip=0.211  viol_fid=True   viol_task=False
+[x2] wrote results/x2/zed.json
+[x2] TOTAL: 10/10 fid-violation reps, 2/10 task-violation reps

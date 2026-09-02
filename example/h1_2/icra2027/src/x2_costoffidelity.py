@@ -46,10 +46,11 @@ def solve_pair(joints_csv, side, urdf, fps=60.0):
     q_prev_t = q_prev_f.copy()
     frames = load_frames(joints_csv, fps=fps)
     rows = []
-    build_target = None
     for t, u_hat, f_hat, _wrist_torso in per_frame_inputs(frames, side, fps):
-        if build_target is None:
-            build_target = robot_scaled_wrist_target(fk, u_hat, f_hat)
+        # Rebuild from THIS frame's directions. Hoisting this out of the
+        # loop freezes the target at frame 0, which makes the task-centric
+        # arm hold a pose instead of tracking the motion.
+        build_target = robot_scaled_wrist_target(fk, u_hat, f_hat)
         target = build_target(q_prev_t)   # task target from the human directions
         q_f, _res_deg, _clamp = solve_fidelity(
             fk, u_hat, f_hat, q_prev_f, lims, yaw_reg=0.0, yaw_neutral=0.0)

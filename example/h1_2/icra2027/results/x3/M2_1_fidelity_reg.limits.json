@@ -1,0 +1,67 @@
+{
+  "capture": "M2_1",
+  "condition": "fidelity_reg",
+  "side": "right",
+  "joint_names": [
+    "right_shoulder_pitch",
+    "right_shoulder_roll",
+    "right_shoulder_yaw",
+    "right_elbow"
+  ],
+  "lo": [
+    -3.14,
+    -3.4,
+    -3.01,
+    -0.95
+  ],
+  "hi": [
+    1.57,
+    0.38,
+    2.66,
+    3.18
+  ],
+  "n_frames": 753,
+  "touch_tol": 0.0001,
+  "lowpass_hz": 2.0,
+  "peak_vel_after_filter": 10.03177264015987,
+  "recommended_speed_scale": 0.3488914796562039,
+  "peak_vel_raw": [
+    9.232570148534016,
+    7.793736052900097,
+    49.062604095293835,
+    43.63503549571294
+  ],
+  "peak_vel_out": [
+    4.468591687887133,
+    7.0551490775870125,
+    10.03177264015987,
+    9.211820228762521
+  ],
+  "predicted_limit_frames": [
+    6,
+    7,
+    8,
+    9,
+    671,
+    672
+  ],
+  "predicted_limit_times": [
+    7.133333333333334,
+    7.15,
+    7.166666666666667,
+    7.183333333333334,
+    19.833333333333332,
+    19.883333333333333
+  ],
+  "offline": {
+    "n_frames": 753,
+    "dt_median": 0.01666666666666572,
+    "flips_yaw": 106,
+    "tip_err_mean_mm": 3.3206988570912594,
+    "tip_err_p95_mm": 12.231923442159626,
+    "limit_violation_frames": 6,
+    "any_violation": true,
+    "margin_mean": 0.4480831341089332,
+    "solver_ms_per_frame": 1.6922716602960115
+  }
+}

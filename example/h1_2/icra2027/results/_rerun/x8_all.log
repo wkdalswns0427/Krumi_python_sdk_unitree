@@ -1,0 +1,20 @@
+posture                 limit avoid       margin   viol  flips   tip_mm   appr
+------------------------------------------------------------------------------
+posture ON  (OKAMI pub) limits OFF         0.252  23/25   5508    10.86    4.9
+posture ON  (OKAMI pub) limits w=0.05      0.208  23/25   5348    25.74   18.3
+posture ON  (OKAMI pub) limits w=0.20      0.482   7/25   2164    51.17   21.8
+posture ON  (OKAMI pub) limits w=0.50      0.602   0/25    957   172.70   33.4
+posture OFF (1e-3 gain) limits OFF         0.325  13/25   1033    10.82   36.5
+posture OFF (1e-3 gain) limits w=0.05      0.400  13/25   2262     9.17   44.2
+posture OFF (1e-3 gain) limits w=0.20      0.489   6/25   1914    49.49   34.0
+posture OFF (1e-3 gain) limits w=0.50      0.605   0/25   1048   176.08   35.8
+
+MAIN EFFECTS on limit margin
+  at limits OFF      posture ON 0.252 -> OFF 0.325   posture costs +0.072
+  at limits w=0.05   posture ON 0.208 -> OFF 0.400   posture costs +0.193
+  at limits w=0.20   posture ON 0.482 -> OFF 0.489   posture costs +0.006
+  at limits w=0.50   posture ON 0.602 -> OFF 0.605   posture costs +0.003
+  at posture ON  (OKAMI pub)  limits OFF 0.252 -> w=0.50 0.602   limit avoidance buys +0.350
+  at posture OFF (1e-3 gain)  limits OFF 0.325 -> w=0.50 0.605   limit avoidance buys +0.280
+
+wrote results/b3/factorial_all25.json  (n=25 captures)

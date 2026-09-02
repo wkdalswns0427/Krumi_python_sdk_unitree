@@ -1,0 +1,135 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="770" viewBox="0 0 1120 770" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a1a1a"/>
+    </marker>
+    <marker id="arR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b23a2f"/>
+    </marker>
+    <marker id="arT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1a7a6b"/>
+    </marker>
+  </defs>
+
+  <rect width="1120" height="770" fill="#ffffff"/>
+
+  <!-- ============ PIPELINE ============ -->
+  <text x="30" y="34" font-size="15" font-weight="bold" fill="#1a1a1a">Retargeting pipeline, and the two channels by which demonstrator configuration enters</text>
+
+  <g stroke="#1a1a1a" stroke-width="1.2" fill="#f7f7f5">
+    <rect x="30"  y="62" width="150" height="62" rx="3"/>
+    <rect x="212" y="62" width="150" height="62" rx="3"/>
+    <rect x="394" y="62" width="150" height="62" rx="3"/>
+    <rect x="576" y="62" width="150" height="62" rx="3"/>
+  </g>
+  <!-- the two boxes where configuration enters -->
+  <rect x="758" y="62" width="150" height="62" rx="3" fill="#fdf1ef" stroke="#b23a2f" stroke-width="1.8"/>
+  <rect x="940" y="62" width="150" height="62" rx="3" fill="#fdf1ef" stroke="#b23a2f" stroke-width="1.8"/>
+
+  <g font-size="12.5" fill="#1a1a1a" text-anchor="middle">
+    <text x="105" y="88">Worker</text><text x="105" y="105">demonstration</text>
+    <text x="287" y="88">Stereo skeleton</text><text x="287" y="105">(BODY_38)</text>
+    <text x="469" y="88">Skeleton</text><text x="469" y="105">conditioning</text>
+    <text x="651" y="80">Limb directions</text><text x="651" y="96">in torso frame</text><text x="651" y="112" font-size="11" fill="#666">u, f</text>
+    <text x="833" y="88" font-weight="bold">Target</text><text x="833" y="105" font-weight="bold">construction</text>
+    <text x="1015" y="80" font-weight="bold">IK solve</text><text x="1015" y="98" font-size="11" fill="#666">w_p posture</text><text x="1015" y="113" font-size="11" fill="#666">w_l limit avoidance</text>
+  </g>
+
+  <g stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#ar)" fill="none">
+    <line x1="180" y1="93" x2="206" y2="93"/>
+    <line x1="362" y1="93" x2="388" y2="93"/>
+    <line x1="544" y1="93" x2="570" y2="93"/>
+    <line x1="726" y1="93" x2="752" y2="93"/>
+    <line x1="908" y1="93" x2="934" y2="93"/>
+  </g>
+  <line x1="1090" y1="93" x2="1112" y2="93" stroke="#1a1a1a" stroke-width="1.2" marker-end="url(#ar)"/>
+  <text x="1105" y="140" font-size="11.5" fill="#666" text-anchor="end">arm command</text>
+
+  <!-- conditioning note -->
+  <text x="469" y="146" font-size="10.5" fill="#666" text-anchor="middle">enforces true bone</text>
+  <text x="469" y="159" font-size="10.5" fill="#666" text-anchor="middle">lengths, 0.61 m</text>
+
+  <!-- ============ THE TWO CHANNELS ============ -->
+  <rect x="30" y="196" width="1060" height="86" rx="3" fill="#fdf1ef" stroke="#b23a2f" stroke-width="1" stroke-dasharray="4 3"/>
+  <text x="48" y="220" font-size="13" font-weight="bold" fill="#b23a2f">Demonstrator configuration enters twice</text>
+
+  <text x="48" y="244" font-size="12" fill="#1a1a1a"><tspan font-weight="bold">Channel A, the objective.</tspan> A posture-fidelity term penalises departure from the demonstrator's arm configuration. Removed by setting w_p to zero.</text>
+  <text x="48" y="266" font-size="12" fill="#1a1a1a"><tspan font-weight="bold">Channel B, the target.</tspan> The reconstructed wrist target has a magnitude set by the demonstrator's elbow angle. <tspan font-weight="bold">Not</tspan> removed by setting w_p to zero.</text>
+
+  <path d="M 833 196 L 833 132" stroke="#b23a2f" stroke-width="1.6" fill="none" marker-end="url(#arR)"/>
+  <text x="843" y="176" font-size="11" font-weight="bold" fill="#b23a2f">B</text>
+  <path d="M 1015 196 L 1015 132" stroke="#b23a2f" stroke-width="1.6" fill="none" marker-end="url(#arR)"/>
+  <text x="1025" y="176" font-size="11" font-weight="bold" fill="#b23a2f">A</text>
+
+  <!-- ============ GEOMETRY PANELS ============ -->
+  <text x="30" y="330" font-size="13" font-weight="bold" fill="#1a1a1a">Channel B in detail: the same reach direction, two target magnitudes</text>
+
+  <!-- panel frames -->
+  <rect x="30"  y="348" width="515" height="330" rx="3" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+  <rect x="575" y="348" width="515" height="330" rx="3" fill="#ffffff" stroke="#ccc" stroke-width="1"/>
+
+  <text x="52" y="374" font-size="12.5" font-weight="bold" fill="#b23a2f">Direction-reconstructed target</text>
+  <text x="52" y="392" font-size="11.5" fill="#666">shoulder + l_up along u + l_fo along f</text>
+  <text x="52" y="408" font-size="11.5" fill="#666">inherits the demonstrator's extension, here 99%</text>
+
+  <text x="597" y="374" font-size="12.5" font-weight="bold" fill="#1a7a6b">Task-defined target</text>
+  <text x="597" y="392" font-size="11.5" fill="#666">same direction, magnitude re-set into the usable range</text>
+  <text x="597" y="408" font-size="11.5" fill="#666">extension limited to 88%</text>
+
+  <!--   LEFT geometry   -->
+  <g transform="translate(150,470)">
+    <!-- direction ray -->
+    <line x1="0" y1="0" x2="245" y2="89" stroke="#999" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="212" y="105" font-size="11" fill="#999">reach direction</text>
+    <!-- arm -->
+    <line x1="0" y1="0" x2="88.3" y2="47.2" stroke="#b23a2f" stroke-width="3.2"/>
+    <line x1="88.3" y1="47.2" x2="186" y2="67.7" stroke="#b23a2f" stroke-width="3.2"/>
+    <!-- swivel circle, nearly degenerate -->
+    <ellipse cx="93" cy="33.9" rx="4" ry="14" transform="rotate(20,93,33.9)" fill="none" stroke="#b23a2f" stroke-width="1.3" stroke-dasharray="3 2"/>
+    <line x1="128" y1="8" x2="99" y2="27" stroke="#b23a2f" stroke-width="0.8"/>
+    <text x="134" y="0" font-size="10.5" fill="#b23a2f">swivel circle</text>
+    <text x="134" y="12" font-size="10.5" fill="#b23a2f">collapsed</text>
+    <!-- joints -->
+    <circle cx="0" cy="0" r="5" fill="#1a1a1a"/>
+    <circle cx="88.3" cy="47.2" r="4.5" fill="#ffffff" stroke="#b23a2f" stroke-width="2"/>
+    <circle cx="186" cy="67.7" r="5.5" fill="#b23a2f"/>
+    <text x="-14" y="4" font-size="11" fill="#1a1a1a" text-anchor="end">shoulder</text>
+    <text x="72" y="66" font-size="11" fill="#666">elbow</text>
+    <text x="176" y="88" font-size="11" font-weight="bold" fill="#b23a2f">target</text>
+    <!-- outcome -->
+    <text x="-110" y="150" font-size="11.5" fill="#1a1a1a">Near-singular. Little spare freedom remains</text>
+    <text x="-110" y="166" font-size="11.5" fill="#1a1a1a">before limit avoidance is applied.</text>
+    <text x="-110" y="188" font-size="12" font-weight="bold" fill="#b23a2f">Limit contact on 10 of 10 captures</text>
+  </g>
+
+  <!--   RIGHT geometry   -->
+  <g transform="translate(695,470)">
+    <line x1="0" y1="0" x2="245" y2="89" stroke="#999" stroke-width="1" stroke-dasharray="4 4"/>
+    <text x="212" y="105" font-size="11" fill="#999">reach direction</text>
+    <!-- arm, more bent -->
+    <line x1="0" y1="0" x2="66.5" y2="74.8" stroke="#1a7a6b" stroke-width="3.2"/>
+    <line x1="66.5" y1="74.8" x2="165" y2="60" stroke="#1a7a6b" stroke-width="3.2"/>
+    <!-- swivel circle, healthy -->
+    <ellipse cx="83" cy="30.1" rx="14" ry="47" transform="rotate(20,83,30.1)" fill="none" stroke="#1a7a6b" stroke-width="1.3" stroke-dasharray="3 2"/>
+    <line x1="150" y1="-14" x2="105" y2="2" stroke="#1a7a6b" stroke-width="0.8"/>
+    <text x="156" y="-18" font-size="10.5" fill="#1a7a6b">swivel circle</text>
+    <text x="156" y="-6" font-size="10.5" fill="#1a7a6b">available</text>
+    <circle cx="0" cy="0" r="5" fill="#1a1a1a"/>
+    <circle cx="66.5" cy="74.8" r="4.5" fill="#ffffff" stroke="#1a7a6b" stroke-width="2"/>
+    <circle cx="165" cy="60" r="5.5" fill="#1a7a6b"/>
+    <text x="-14" y="4" font-size="11" fill="#1a1a1a" text-anchor="end">shoulder</text>
+    <text x="48" y="94" font-size="11" fill="#666">elbow</text>
+    <text x="156" y="82" font-size="11" font-weight="bold" fill="#1a7a6b">target</text>
+    <text x="-110" y="150" font-size="11.5" fill="#1a1a1a">Well conditioned. Redundancy remains for</text>
+    <text x="-110" y="166" font-size="11.5" fill="#1a1a1a">null-space limit avoidance to use.</text>
+    <text x="-110" y="188" font-size="12" font-weight="bold" fill="#1a7a6b">Limit contact on 0 of 10 captures</text>
+  </g>
+
+  <!-- arrow between panels -->
+  <path d="M 548 500 L 572 500" stroke="#1a7a6b" stroke-width="2" fill="none" marker-end="url(#arT)"/>
+
+  <!-- ============ SCOPE NOTE ============ -->
+  <rect x="30" y="694" width="1060" height="52" rx="3" fill="#f7f7f5" stroke="#ccc" stroke-width="1"/>
+  <text x="48" y="716" font-size="11.5" fill="#1a1a1a"><tspan font-weight="bold">Scope.</tspan> Re-setting extension removes limit contact on reaching operations: bricklaying and lifting go to 0 of 10, and the reach sweep to 0 of 20.</text>
+  <text x="48" y="734" font-size="11.5" fill="#1a1a1a">It is inert on cross-body reach, which becomes infeasible through a direction-driven mechanism instead, and remains at 5 of 5.</text>
+</svg>

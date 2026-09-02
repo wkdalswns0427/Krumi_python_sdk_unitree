@@ -122,6 +122,23 @@ def body_to_rows(body, frame_idx, index_map):
     return rows
 
 
+def _draw_preview(cv2, img, body, idx_map, frame_idx, kept):
+    """Draw tracked keypoints and a status line onto a BGR preview image."""
+    h, w = img.shape[:2]
+    detected = body is not None
+    if detected:
+        kp2 = getattr(body, "keypoint_2d", None)
+        if kp2 is not None:
+            for zed_idx in idx_map:
+                if zed_idx < len(kp2):
+                    u, v = float(kp2[zed_idx][0]), float(kp2[zed_idx][1])
+                    if u == u and v == v and 0 <= u < w and 0 <= v < h:
+                        cv2.circle(img, (int(u), int(v)), 5, (0, 255, 0), -1)
+    color = (0, 200, 0) if detected else (0, 0, 255)
+    cv2.putText(img, f"frame {frame_idx}  body {'YES' if detected else 'NO'}  kept {kept}",
+                (12, 34), cv2.FONT_HERSHEY_SIMPLEX, 0.9, color, 2)
+
+
 def run(args):
     import pyzed.sl as sl
 
@@ -179,6 +196,17 @@ def run(args):
 
         bodies = sl.Bodies()
         grabbed = processed = frames_with_body = total_rows = 0
+        show, _cv2, img_mat = args.show, None, None
+        if show:
+            try:
+                import cv2 as _cv2
+                img_mat = sl.Mat()
+                _cv2.namedWindow("ZED capture", _cv2.WINDOW_NORMAL)
+                _cv2.resizeWindow("ZED capture", 960, 540)
+                print("[zed] --show: live preview window open (needs a display)")
+            except Exception as e:
+                print(f"[zed] --show disabled: {e}", file=sys.stderr)
+                show = False
         with open(args.out, "w", newline="") as f:
             writer = csv.writer(f)
             writer.writerow(["frame", "joint", "x", "y", "z", "conf"])
@@ -200,6 +228,17 @@ def run(args):
                         writer.writerows(rows)
                         frames_with_body += 1
                         total_rows += len(rows)
+                    if show and processed % 3 == 0:
+                        try:
+                            zed.retrieve_image(img_mat, sl.VIEW.LEFT)
+                            prev = _cv2.cvtColor(img_mat.get_data(), _cv2.COLOR_BGRA2BGR)
+                            _draw_preview(_cv2, prev, body, idx_map, processed,
+                                          frames_with_body)
+                            _cv2.imshow("ZED capture", prev)
+                            _cv2.waitKey(1)
+                        except Exception as e:
+                            print(f"[zed] --show error, disabling: {e}", file=sys.stderr)
+                            show = False
                     processed += 1
                     if args.max_frames and processed >= args.max_frames:
                         break
@@ -211,6 +250,12 @@ def run(args):
               f"body_format=BODY_{args.body_format} out={args.out}")
         return 0 if total_rows > 0 else 1
     finally:
+        if getattr(args, "show", False):
+            try:
+                import cv2
+                cv2.destroyAllWindows()
+            except Exception:
+                pass
         if args.record:
             zed.disable_recording()
         zed.disable_body_tracking()
@@ -291,6 +336,8 @@ def main():
                     help="camera is stationary (tripod) — better tracking perf")
     ap.add_argument("--record", default="",
                     help="live mode: also record SVO2 to this path")
+    ap.add_argument("--show", action="store_true",
+                    help="live preview window with the tracked skeleton (needs a display)")
     ap.add_argument("--self-test", action="store_true")
     args = ap.parse_args()
 

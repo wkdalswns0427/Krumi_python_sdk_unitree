@@ -1,0 +1,53 @@
+{
+  "capture": "M3_1",
+  "condition": "taskdefined",
+  "side": "right",
+  "joint_names": [
+    "right_shoulder_pitch",
+    "right_shoulder_roll",
+    "right_shoulder_yaw",
+    "right_elbow"
+  ],
+  "lo": [
+    -3.14,
+    -3.4,
+    -3.01,
+    -0.95
+  ],
+  "hi": [
+    1.57,
+    0.38,
+    2.66,
+    3.18
+  ],
+  "n_frames": 973,
+  "touch_tol": 0.0001,
+  "lowpass_hz": 2.0,
+  "peak_vel_after_filter": 3.8944358318147,
+  "recommended_speed_scale": 0.8987181073591078,
+  "peak_vel_raw": [
+    6.099819684942931,
+    6.981158668600313,
+    1.7027462261737412,
+    8.822645481659794
+  ],
+  "peak_vel_out": [
+    2.8908692046578355,
+    3.420260723275762,
+    0.9352278104813162,
+    3.8944358318147
+  ],
+  "predicted_limit_frames": [],
+  "predicted_limit_times": [],
+  "offline": {
+    "n_frames": 973,
+    "dt_median": 0.01666666666666572,
+    "flips_yaw": 2,
+    "tip_err_mean_mm": 0.04857025107444722,
+    "tip_err_p95_mm": 0.09198889484809018,
+    "limit_violation_frames": 0,
+    "any_violation": false,
+    "margin_mean": 0.3757631772404498,
+    "solver_ms_per_frame": 1.509303017447627
+  }
+}

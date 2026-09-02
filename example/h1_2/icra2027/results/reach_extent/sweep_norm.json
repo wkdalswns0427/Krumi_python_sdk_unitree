@@ -1,0 +1,472 @@
+{
+  "side": "right",
+  "urdf": "/home/mchang344/mj_ws/assets/h1_2_description/h1_2.urdf",
+  "per_rep": [
+    {
+      "fidelity": {
+        "viol_frames": 12,
+        "viol_rate": 0.047244094488188976,
+        "any_violation": true,
+        "margin_mean": 0.30350587858114747
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3964526696203933
+      },
+      "n_frames": 254,
+      "human_reach_p95_m": 0.5580586972717719,
+      "target_reach_p95_m": 0.5142796939673606,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.917252777074818,
+      "capture": "RS_d1_1",
+      "d_level": "d1"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3080988769583099
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.40766246042014886
+      },
+      "n_frames": 418,
+      "human_reach_p95_m": 0.49387924685985446,
+      "target_reach_p95_m": 0.4571028003354056,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8152739023814868,
+      "capture": "RS_d1_2",
+      "d_level": "d1"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3225794897288635
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3633891513631005
+      },
+      "n_frames": 379,
+      "human_reach_p95_m": 0.49236170122048417,
+      "target_reach_p95_m": 0.45619094511015607,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8136475466309846,
+      "capture": "RS_d1_3",
+      "d_level": "d1"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3177893033576037
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3770922705447481
+      },
+      "n_frames": 318,
+      "human_reach_p95_m": 0.5128308838707929,
+      "target_reach_p95_m": 0.47444760012039944,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8462095312955111,
+      "capture": "RS_d1_4",
+      "d_level": "d1"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.30319765839643203
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.35861915590235705
+      },
+      "n_frames": 235,
+      "human_reach_p95_m": 0.4820552868026752,
+      "target_reach_p95_m": 0.4462865044226763,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.7959823037047488,
+      "capture": "RS_d1_5",
+      "d_level": "d1"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3638170750194517
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.4196522450030023
+      },
+      "n_frames": 353,
+      "human_reach_p95_m": 0.5102878885616364,
+      "target_reach_p95_m": 0.47169394920814983,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8412982077958984,
+      "capture": "RS_d2_1",
+      "d_level": "d2"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3286401257045433
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3770763341163
+      },
+      "n_frames": 431,
+      "human_reach_p95_m": 0.5277624755042944,
+      "target_reach_p95_m": 0.4869524203207467,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8685127277664918,
+      "capture": "RS_d2_2",
+      "d_level": "d2"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.32574546808543225
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.36598945683947204
+      },
+      "n_frames": 312,
+      "human_reach_p95_m": 0.5365495824090261,
+      "target_reach_p95_m": 0.4942380055384398,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8815070640234631,
+      "capture": "RS_d2_3",
+      "d_level": "d2"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3282104127022048
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.37566154693744924
+      },
+      "n_frames": 312,
+      "human_reach_p95_m": 0.5463300952874975,
+      "target_reach_p95_m": 0.5033891406114385,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8978287352027019,
+      "capture": "RS_d2_4",
+      "d_level": "d2"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.35924321214848187
+      },
+      "taskcentric": {
+        "viol_frames": 0,
+        "viol_rate": 0.0,
+        "any_violation": false,
+        "margin_mean": 0.3866031777235886
+      },
+      "n_frames": 379,
+      "human_reach_p95_m": 0.523632318769554,
+      "target_reach_p95_m": 0.4836039133579699,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8625404380830956,
+      "capture": "RS_d2_5",
+      "d_level": "d2"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 28,
+        "viol_rate": 0.06086956521739131,
+        "any_violation": true,
+        "margin_mean": 0.3083943949368403
+      },
+      "taskcentric": {
+        "viol_frames": 68,
+        "viol_rate": 0.14782608695652175,
+        "any_violation": true,
+        "margin_mean": 0.2820864454155772
+      },
+      "n_frames": 460,
+      "human_reach_p95_m": 0.6089904874018968,
+      "target_reach_p95_m": 0.5582711156018028,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9957144665698386,
+      "capture": "RS_d3_1",
+      "d_level": "d3"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 34,
+        "viol_rate": 0.07391304347826087,
+        "any_violation": true,
+        "margin_mean": 0.2902791772686841
+      },
+      "taskcentric": {
+        "viol_frames": 60,
+        "viol_rate": 0.13043478260869565,
+        "any_violation": true,
+        "margin_mean": 0.2946341165590589
+      },
+      "n_frames": 460,
+      "human_reach_p95_m": 0.6089905708101729,
+      "target_reach_p95_m": 0.5582489072690173,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9956748564993642,
+      "capture": "RS_d3_2",
+      "d_level": "d3"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 3,
+        "viol_rate": 0.006355932203389831,
+        "any_violation": true,
+        "margin_mean": 0.38974982455520224
+      },
+      "taskcentric": {
+        "viol_frames": 5,
+        "viol_rate": 0.01059322033898305,
+        "any_violation": true,
+        "margin_mean": 0.43280665425276704
+      },
+      "n_frames": 472,
+      "human_reach_p95_m": 0.5250319357169354,
+      "target_reach_p95_m": 0.48452850150705273,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.8641895038683968,
+      "capture": "RS_d3_3",
+      "d_level": "d3"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 3,
+        "viol_rate": 0.007142857142857143,
+        "any_violation": true,
+        "margin_mean": 0.3519412834676959
+      },
+      "taskcentric": {
+        "viol_frames": 49,
+        "viol_rate": 0.11666666666666667,
+        "any_violation": true,
+        "margin_mean": 0.28163559474838495
+      },
+      "n_frames": 420,
+      "human_reach_p95_m": 0.6089902415434095,
+      "target_reach_p95_m": 0.5580203526046719,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9952672137262907,
+      "capture": "RS_d3_4",
+      "d_level": "d3"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 19,
+        "viol_rate": 0.04328018223234624,
+        "any_violation": true,
+        "margin_mean": 0.3536780585365583
+      },
+      "taskcentric": {
+        "viol_frames": 28,
+        "viol_rate": 0.06378132118451026,
+        "any_violation": true,
+        "margin_mean": 0.37801165653272084
+      },
+      "n_frames": 439,
+      "human_reach_p95_m": 0.6089898766296529,
+      "target_reach_p95_m": 0.5582452832403914,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9956683927980741,
+      "capture": "RS_d3_5",
+      "d_level": "d3"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 20,
+        "viol_rate": 0.047619047619047616,
+        "any_violation": true,
+        "margin_mean": 0.24827263869823593
+      },
+      "taskcentric": {
+        "viol_frames": 57,
+        "viol_rate": 0.1357142857142857,
+        "any_violation": true,
+        "margin_mean": 0.24891511162272223
+      },
+      "n_frames": 420,
+      "human_reach_p95_m": 0.6089904863631699,
+      "target_reach_p95_m": 0.5583038147740436,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.995772787765285,
+      "capture": "RS_d4_1",
+      "d_level": "d4"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 30,
+        "viol_rate": 0.07211538461538461,
+        "any_violation": true,
+        "margin_mean": 0.27598436093211454
+      },
+      "taskcentric": {
+        "viol_frames": 37,
+        "viol_rate": 0.0889423076923077,
+        "any_violation": true,
+        "margin_mean": 0.301037938048318
+      },
+      "n_frames": 416,
+      "human_reach_p95_m": 0.608990366856488,
+      "target_reach_p95_m": 0.5581163029128963,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9954383476203805,
+      "capture": "RS_d4_2",
+      "d_level": "d4"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 13,
+        "viol_rate": 0.032418952618453865,
+        "any_violation": true,
+        "margin_mean": 0.3143613797440721
+      },
+      "taskcentric": {
+        "viol_frames": 69,
+        "viol_rate": 0.17206982543640897,
+        "any_violation": true,
+        "margin_mean": 0.18474855513970392
+      },
+      "n_frames": 401,
+      "human_reach_p95_m": 0.6089905658596032,
+      "target_reach_p95_m": 0.5582298670343394,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9956408969471219,
+      "capture": "RS_d4_3",
+      "d_level": "d4"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 20,
+        "viol_rate": 0.046189376443418015,
+        "any_violation": true,
+        "margin_mean": 0.32175606719681044
+      },
+      "taskcentric": {
+        "viol_frames": 87,
+        "viol_rate": 0.20092378752886836,
+        "any_violation": true,
+        "margin_mean": 0.19188113960826217
+      },
+      "n_frames": 433,
+      "human_reach_p95_m": 0.6089906998723372,
+      "target_reach_p95_m": 0.5584123490183152,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9959663659643343,
+      "capture": "RS_d4_4",
+      "d_level": "d4"
+    },
+    {
+      "fidelity": {
+        "viol_frames": 20,
+        "viol_rate": 0.04081632653061224,
+        "any_violation": true,
+        "margin_mean": 0.3180595906015967
+      },
+      "taskcentric": {
+        "viol_frames": 51,
+        "viol_rate": 0.10408163265306122,
+        "any_violation": true,
+        "margin_mean": 0.22624218647580713
+      },
+      "n_frames": 490,
+      "human_reach_p95_m": 0.608990562012705,
+      "target_reach_p95_m": 0.5583801865798381,
+      "robot_arm_len_m": 0.5606739023537588,
+      "extension_ratio": 0.9959090020700242,
+      "capture": "RS_d4_5",
+      "d_level": "d4"
+    }
+  ],
+  "by_level": {
+    "d1": {
+      "n": 5,
+      "human_reach_m": 0.5078371632051157,
+      "extension_ratio": 0.8376732122175099,
+      "fid_viol_rate": 0.009448818897637795,
+      "task_viol_rate": 0.0,
+      "fid_reps_violating": 1,
+      "task_reps_violating": 0,
+      "fid_margin": 0.31103424140447133,
+      "task_margin": 0.38064314157014956
+    },
+    "d2": {
+      "n": 5,
+      "human_reach_m": 0.5289124721064017,
+      "extension_ratio": 0.8703374345743301,
+      "fid_viol_rate": 0.0,
+      "task_viol_rate": 0.0,
+      "fid_reps_violating": 0,
+      "task_reps_violating": 0,
+      "fid_margin": 0.3411312587320228,
+      "task_margin": 0.38499655212396244
+    },
+    "d3": {
+      "n": 5,
+      "human_reach_m": 0.5921986224204134,
+      "extension_ratio": 0.9693028866923928,
+      "fid_viol_rate": 0.03831231605484908,
+      "task_viol_rate": 0.09386041555107548,
+      "fid_reps_violating": 5,
+      "task_reps_violating": 5,
+      "fid_margin": 0.3388085477529962,
+      "task_margin": 0.3338348935017018
+    },
+    "d4": {
+      "n": 5,
+      "human_reach_m": 0.6089905361928606,
+      "extension_ratio": 0.9957454800734291,
+      "fid_viol_rate": 0.047831817565383274,
+      "task_viol_rate": 0.14034636780498638,
+      "fid_reps_violating": 5,
+      "task_reps_violating": 5,
+      "fid_margin": 0.29568680743456593,
+      "task_margin": 0.2305649861789627
+    }
+  }
+}

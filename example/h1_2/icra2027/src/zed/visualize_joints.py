@@ -6,20 +6,13 @@ writes and renders the upper-body skeleton (shoulders, elbows, wrists, hips)
 as an interactive 3D plot, a saved image, or an animation. Can overlay two
 CSVs (for example mono vs rgbd) to eyeball the difference.
 
-Display axes: horizontal = x, depth into screen = z, up = -y (the CSV y is
-down in both camera and MediaPipe world frames, so up is negated).
-
-Usage:
-    # one frame (defaults to the most complete frame), interactive window:
-    python3 visualize_joints.py smoke2_rgbd.csv
-    # a specific frame, saved to png:
-    python3 visualize_joints.py smoke2_rgbd.csv --frame 425 --out frame425.png
-    # animate every frame to a video:
-    python3 visualize_joints.py smoke2_rgbd.csv --out smoke2.mp4 --fps 20
-    # overlay mono vs rgbd (both centred on the pelvis):
-    python3 visualize_joints.py mono.csv --overlay rgbd.csv --frame 425 --out cmp.png
-
-Runs under system python3.10 with matplotlib. No ROS, no MediaPipe.
+Display axes depend on the source frame, selected with --up:
+  --up -y  (default) MediaPipe / iPhone / camera frames, where CSV y is down:
+           horizontal = x, depth into screen = z, up = -y.
+  --up z   ZED RIGHT_HANDED_Z_UP_X_FWD (zed_to_joints.py), where x is forward
+           and y is left: horizontal = -y, depth into screen = x, up = z.
+Both render the subject as the camera sees them, so the subject's left arm
+appears on the right of the plot.
 """
 
 import argparse
@@ -90,9 +83,22 @@ def centered(pts, mode):
 
 
 # ── drawing ──────────────────────────────────────────────────────────────────
+# Source up-axis, set from --up. "-y" = camera/MediaPipe (y down),
+# "z" = ZED RIGHT_HANDED_Z_UP_X_FWD (x forward, y left, z up).
+UP = "-y"
+
+# up mode -> (plot axis labels, CSV -> plot transform)
+_DISP = {
+    "-y": (("x (right)", "z (depth)", "-y (up)"),
+           lambda p: (p[0], p[2], -p[1])),
+    "z":  (("-y (right)", "x (depth)", "z (up)"),
+           lambda p: (-p[1], p[0], p[2])),
+}
+
+
 def _disp(p):
-    """CSV (x, y, z) -> plot (x, z, -y): x right, z depth, up = -y."""
-    return p[0], p[2], -p[1]
+    """CSV (x, y, z) -> plot (right, depth, up) for the current UP mode."""
+    return _DISP[UP][1](p)
 
 
 def draw_pose(ax, pts, uniform_color=None, label=True):
@@ -130,9 +136,10 @@ def set_equal_axes(ax, all_pts):
 
 def style(ax, title, elev, azim):
     ax.set_title(title, fontsize=9)
-    ax.set_xlabel("x (right)")
-    ax.set_ylabel("z (depth)")
-    ax.set_zlabel("-y (up)")
+    xl, yl, zl = _DISP[UP][0]
+    ax.set_xlabel(xl)
+    ax.set_ylabel(yl)
+    ax.set_zlabel(zl)
     ax.view_init(elev=elev, azim=azim)
 
 
@@ -145,6 +152,9 @@ def parse_args():
     p.add_argument("--frame", type=int, default=None,
                    help="frame index (default: the most complete frame)")
     p.add_argument("--out", help="save to PNG (static) or MP4/GIF (animation)")
+    p.add_argument("--up", choices=["-y", "z"], default="-y",
+                   help="source up-axis: -y for MediaPipe/iPhone camera frames "
+                        "(default), z for ZED RIGHT_HANDED_Z_UP_X_FWD")
     p.add_argument("--conf-min", type=float, default=0.3,
                    help="hide joints below this confidence (default: 0.3)")
     p.add_argument("--center", choices=["none", "pelvis"], default=None,
@@ -157,7 +167,9 @@ def parse_args():
 
 
 def main():
+    global UP
     args = parse_args()
+    UP = args.up
     if not os.path.isfile(args.csv):
         sys.exit(f"not found: {args.csv}")
     frames = load_csv(args.csv)

@@ -1,0 +1,26 @@
+
+=== right arm ===
+ ext_cap   contact   margin   tip_mm   flips
+    0.78      8/25     0.381     0.62     423
+    0.82      6/25     0.408     0.60     428
+    0.86      6/25     0.430     0.60     429
+    0.88      6/25     0.438     0.60     416
+    0.90      6/25     0.444     0.61     414
+    0.94      6/25     0.451     0.65     415
+    0.98      8/25     0.417     7.65     506
+    1.00     10/25     0.400     8.47    1108
+  lowest contact (6/25) over ceilings 0.82 to 0.94
+
+=== left arm ===
+ ext_cap   contact   margin   tip_mm   flips
+    0.78      4/25     0.380     0.11      51
+    0.82      4/25     0.373     0.12      49
+    0.86      4/25     0.354     0.14      49
+    0.88      5/25     0.341     0.15      49
+    0.90      6/25     0.326     0.17      51
+    0.94      9/25     0.291     0.33      59
+    0.98     13/25     0.246     1.37     111
+    1.00     15/25     0.216     3.31     478
+  lowest contact (4/25) over ceilings 0.78 to 0.86
+
+wrote /home/mchang344/mj_ws/Krumi_python_sdk_unitree/example/h1_2/icra2027/src/../results/ext_cap/sweep.json

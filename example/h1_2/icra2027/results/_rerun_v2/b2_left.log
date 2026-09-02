@@ -1,0 +1,27 @@
+[b2]   M1_1: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg= 56.5  margin=0.32
+[b2]   M1_2: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg= 61.0  margin=0.30
+[b2]   M1_3: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg=  5.7  margin=0.52
+[b2]   M1_4: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg= 20.7  margin=0.51
+[b2]   M1_5: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg= 55.4  margin=0.41
+[b2]   M2_1: flips=25  viol_frames=221  tip_mm=12.6  approach_deg=  6.9  margin=0.13
+[b2]   M2_2: flips=20  viol_frames=249  tip_mm=10.5  approach_deg=  8.4  margin=0.14
+[b2]   M2_3: flips=34  viol_frames=195  tip_mm= 9.6  approach_deg= 24.6  margin=0.14
+[b2]   M2_4: flips=30  viol_frames=185  tip_mm= 9.9  approach_deg=  9.8  margin=0.14
+[b2]   M2_5: flips=20  viol_frames=199  tip_mm=10.1  approach_deg= 20.0  margin=0.15
+[b2]   M3_1: flips= 6  viol_frames=  0  tip_mm= 0.1  approach_deg= 10.4  margin=0.23
+[b2]   M3_2: flips=12  viol_frames=112  tip_mm= 1.9  approach_deg= 26.0  margin=0.15
+[b2]   M3_3: flips=17  viol_frames= 73  tip_mm= 1.3  approach_deg= 15.2  margin=0.19
+[b2]   M3_4: flips=21  viol_frames=  2  tip_mm= 0.1  approach_deg= 10.2  margin=0.21
+[b2]   M3_5: flips=23  viol_frames=  6  tip_mm= 0.1  approach_deg=  9.2  margin=0.20
+[b2]   M4_1: flips=19  viol_frames= 17  tip_mm= 2.2  approach_deg= 14.0  margin=0.18
+[b2]   M4_2: flips=13  viol_frames= 36  tip_mm= 5.7  approach_deg= 28.4  margin=0.16
+[b2]   M4_3: flips=10  viol_frames= 18  tip_mm= 1.7  approach_deg= 20.1  margin=0.20
+[b2]   M4_4: flips=11  viol_frames= 18  tip_mm= 2.3  approach_deg= 28.0  margin=0.17
+[b2]   M4_5: flips= 4  viol_frames= 11  tip_mm= 0.8  approach_deg=  6.0  margin=0.24
+[b2]   M5_1: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg=  4.3  margin=0.37
+[b2]   M5_2: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg=  7.1  margin=0.39
+[b2]   M5_3: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg=  3.8  margin=0.38
+[b2]   M5_4: flips= 0  viol_frames=  0  tip_mm= 0.1  approach_deg=  5.4  margin=0.38
+[b2]   M5_5: flips= 3  viol_frames=  0  tip_mm= 0.1  approach_deg=  7.2  margin=0.38
+[b2] wrote results/b2/v2_left.json
+[b2] TOTAL: 268 flips across 25 reps, 14/25 reps had a violation

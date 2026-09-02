@@ -1,0 +1,9 @@
+[b3] h2o-keypoint     flips=2072  viol=20/25  margin=0.225  manip=0.187  tip_mm=22.46  appr_deg=7.5
+[b3] okami-gain1.0    flips=1736  viol=23/25  margin=0.170  manip=0.184  tip_mm=11.51  appr_deg=9.1
+[b3] okami-gain0.1    flips=575  viol=15/25  margin=0.306  manip=0.182  tip_mm=3.22  appr_deg=14.9
+[b3] okami-gain0.01   flips=435  viol=10/25  margin=0.338  manip=0.187  tip_mm=6.11  appr_deg=25.7
+[b3] okami-gain0.001  flips=435  viol=10/25  margin=0.344  manip=0.189  tip_mm=6.18  appr_deg=27.5
+[b3] b1-naive         flips=2256  viol=20/25  margin=0.237  manip=0.189  tip_mm=16.39  appr_deg=4.0
+[b3] b1-iros-reg      flips=2462  viol=17/25  margin=0.360  manip=0.189  tip_mm=28.30  appr_deg=5.2
+[b3] taskcentric      flips=836  viol=8/25  margin=0.439  manip=0.186  tip_mm=1.65  appr_deg=29.1
+[b3] wrote results/b3/v2_right.json and results/b3/v2_right.csv

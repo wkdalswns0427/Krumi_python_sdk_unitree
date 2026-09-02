@@ -1,0 +1,82 @@
+{
+  "side": "right",
+  "captures": [
+    "M2_1"
+  ],
+  "per_rep": {
+    "h2o-keypoint": [
+      {
+        "n_frames": 1280,
+        "flips_yaw": 12,
+        "margin_mean": 0.18650591931297517,
+        "margin_min": 3.5273371512791437e-10,
+        "violation_frames": 7,
+        "any_violation": true,
+        "manip_mean": 0.22000667758712117,
+        "tip_err_mean_mm": 0.2034325022521164,
+        "approach_err_mean_deg": 0.11671537661118343,
+        "capture": "M2_1"
+      }
+    ],
+    "okami-gain1.0": [
+      {
+        "n_frames": 1280,
+        "flips_yaw": 12,
+        "margin_mean": 0.18654487996985067,
+        "margin_min": 3.5273371512791437e-10,
+        "violation_frames": 7,
+        "any_violation": true,
+        "manip_mean": 0.22016591187910875,
+        "tip_err_mean_mm": 0.1114307196303879,
+        "approach_err_mean_deg": 0.16488412665066213,
+        "capture": "M2_1"
+      }
+    ],
+    "taskcentric": [
+      {
+        "n_frames": 1280,
+        "flips_yaw": 0,
+        "margin_mean": 0.3138932362349155,
+        "margin_min": 0.1138013908386734,
+        "violation_frames": 0,
+        "any_violation": false,
+        "manip_mean": 0.22725759574049334,
+        "tip_err_mean_mm": 0.08872096793220033,
+        "approach_err_mean_deg": 18.778891249932993,
+        "capture": "M2_1"
+      }
+    ]
+  },
+  "totals": {
+    "h2o-keypoint": {
+      "posture_weight": "hard",
+      "total_flips": 12,
+      "reps_with_violation": 1,
+      "reps_total": 1,
+      "margin_mean": 0.18650591931297517,
+      "manip_mean": 0.22000667758712117,
+      "tip_err_mean_mm": 0.2034325022521164,
+      "approach_err_mean_deg": 0.11671537661118343
+    },
+    "okami-gain1.0": {
+      "posture_weight": "0.04 / 0.08",
+      "total_flips": 12,
+      "reps_with_violation": 1,
+      "reps_total": 1,
+      "margin_mean": 0.18654487996985067,
+      "manip_mean": 0.22016591187910875,
+      "tip_err_mean_mm": 0.1114307196303879,
+      "approach_err_mean_deg": 0.16488412665066213
+    },
+    "taskcentric": {
+      "posture_weight": "none",
+      "total_flips": 0,
+      "reps_with_violation": 0,
+      "reps_total": 1,
+      "margin_mean": 0.3138932362349155,
+      "manip_mean": 0.22725759574049334,
+      "tip_err_mean_mm": 0.08872096793220033,
+      "approach_err_mean_deg": 18.778891249932993
+    }
+  }
+}

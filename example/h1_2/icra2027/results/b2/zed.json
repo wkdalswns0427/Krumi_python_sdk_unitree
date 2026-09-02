@@ -1,0 +1,140 @@
+{
+  "side": "right",
+  "per_rep": [
+    {
+      "n_frames": 870,
+      "flips_yaw": 19,
+      "tip_err_mean_mm": 0.2611719050960629,
+      "tip_err_p95_mm": 1.2308462944981917,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.5345074337724565,
+      "approach_err_mean_deg": 24.003312076951335,
+      "approach_err_p95_deg": 54.98236019324331,
+      "solver_ms_per_frame": 5.74925087777705,
+      "capture": "M2_1"
+    },
+    {
+      "n_frames": 962,
+      "flips_yaw": 28,
+      "tip_err_mean_mm": 0.3629346517941013,
+      "tip_err_p95_mm": 3.526903418050911,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.5026086273356871,
+      "approach_err_mean_deg": 32.004215464853054,
+      "approach_err_p95_deg": 71.73832145135793,
+      "solver_ms_per_frame": 6.379925067925713,
+      "capture": "M2_2"
+    },
+    {
+      "n_frames": 877,
+      "flips_yaw": 31,
+      "tip_err_mean_mm": 3.2638017630548166,
+      "tip_err_p95_mm": 25.60950817121748,
+      "limit_violation_frames": 123,
+      "any_violation": true,
+      "margin_mean": 0.2525343307060057,
+      "approach_err_mean_deg": 61.84333655691033,
+      "approach_err_p95_deg": 95.31929732424183,
+      "solver_ms_per_frame": 10.218262898617827,
+      "capture": "M2_3"
+    },
+    {
+      "n_frames": 908,
+      "flips_yaw": 18,
+      "tip_err_mean_mm": 0.09852609022534262,
+      "tip_err_p95_mm": 0.09621748756100662,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.4875595656548048,
+      "approach_err_mean_deg": 51.54883928520446,
+      "approach_err_p95_deg": 88.87034718530201,
+      "solver_ms_per_frame": 3.053734569281077,
+      "capture": "M2_4"
+    },
+    {
+      "n_frames": 886,
+      "flips_yaw": 41,
+      "tip_err_mean_mm": 0.8937959168949914,
+      "tip_err_p95_mm": 4.727433688187486,
+      "limit_violation_frames": 12,
+      "any_violation": true,
+      "margin_mean": 0.4521813259842615,
+      "approach_err_mean_deg": 35.76397926042834,
+      "approach_err_p95_deg": 79.17514904312648,
+      "solver_ms_per_frame": 8.893694537302846,
+      "capture": "M2_5"
+    },
+    {
+      "n_frames": 1204,
+      "flips_yaw": 42,
+      "tip_err_mean_mm": 0.3678704425887733,
+      "tip_err_p95_mm": 3.614060239708079,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.43839471136508196,
+      "approach_err_mean_deg": 39.23800564174446,
+      "approach_err_p95_deg": 89.77759383616107,
+      "solver_ms_per_frame": 5.795807801991503,
+      "capture": "M3_1"
+    },
+    {
+      "n_frames": 1256,
+      "flips_yaw": 36,
+      "tip_err_mean_mm": 0.13954776747648615,
+      "tip_err_p95_mm": 0.09696879066631554,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.43896221963649973,
+      "approach_err_mean_deg": 37.71045880370688,
+      "approach_err_p95_deg": 90.18011213125985,
+      "solver_ms_per_frame": 3.498821816656288,
+      "capture": "M3_2"
+    },
+    {
+      "n_frames": 1341,
+      "flips_yaw": 51,
+      "tip_err_mean_mm": 0.1903108874807792,
+      "tip_err_p95_mm": 0.09857619580067316,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.44345997487695965,
+      "approach_err_mean_deg": 38.69703985065335,
+      "approach_err_p95_deg": 87.56879892340872,
+      "solver_ms_per_frame": 4.109373273804373,
+      "capture": "M3_3"
+    },
+    {
+      "n_frames": 1252,
+      "flips_yaw": 53,
+      "tip_err_mean_mm": 0.3351070396209389,
+      "tip_err_p95_mm": 3.380913488556838,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.43834350974193365,
+      "approach_err_mean_deg": 38.78697223461086,
+      "approach_err_p95_deg": 86.87241716364956,
+      "solver_ms_per_frame": 6.478676756177419,
+      "capture": "M3_4"
+    },
+    {
+      "n_frames": 1459,
+      "flips_yaw": 49,
+      "tip_err_mean_mm": 0.27117806124485616,
+      "tip_err_p95_mm": 1.6911531062130012,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.44179494082068316,
+      "approach_err_mean_deg": 33.9945186462614,
+      "approach_err_p95_deg": 78.11401941491269,
+      "solver_ms_per_frame": 6.263213666861927,
+      "capture": "M3_5"
+    }
+  ],
+  "totals": {
+    "total_flips": 368,
+    "reps_with_violation": 2,
+    "reps_total": 10
+  }
+}

@@ -1,0 +1,13 @@
+condition             flips  viol reps   margin   tip mm
+--------------------------------------------------------
+fidelity naive         1446        6/6    0.306    15.79
+fidelity IROS-reg       925        6/6    0.129    92.65
+fidelity strong-reg    1337        6/6    0.341    19.30
+task-centric            196        1/6    0.436     0.75
+
+per-rep flips (viol frames):
+                            M2_1        M2_2        M2_3        M3_1        M3_2        M3_3
+fidelity naive         246(46  )   270(70  )   262(27  )   147(545 )   242(83  )   279(221 )
+fidelity IROS-reg      105(666 )   134(620 )   152(516 )   162(467 )   121(1017)   251(401 )
+fidelity strong-reg    189(290 )   239(59  )   259(11  )   173(32  )   213(73  )   264(170 )
+task-centric            20(0   )    28(0   )    26(123 )    45(0   )    35(0   )    42(0   )

@@ -1,0 +1,140 @@
+Panels:
+  - Class: rviz_common/Displays
+    Name: Displays
+    Property Tree Widget:
+      Expanded:
+        - /Camera overlay1
+        - /Human skeleton1
+      Splitter Ratio: 0.5
+    Tree Height: 620
+Visualization Manager:
+  Class: ""
+  Name: root
+  Displays:
+    - Class: rviz_default_plugins/Camera
+      Name: Camera overlay
+      Enabled: true
+      Topic:
+        Value: /zed/left/image
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Image Rendering: background and overlay
+      Overlay Alpha: 0.6
+      Zoom Factor: 1
+      Visibility:
+        Grid: false
+        Human skeleton: true
+        YOLO boxes: true
+        Point cloud: false
+        Depth image: false
+        RobotModel: false
+        TF: false
+        Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Human skeleton
+      Enabled: true
+      Topic:
+        Value: /zed/human_skeleton
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Namespaces:
+        bones: true
+        joints: true
+    - Class: rviz_default_plugins/MarkerArray
+      Name: YOLO boxes
+      Enabled: true
+      Topic:
+        Value: /yolo/boxes
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Namespaces:
+        boxes: true
+        labels: true
+    - Class: rviz_default_plugins/PointCloud2
+      Name: Point cloud
+      Enabled: true
+      Topic:
+        Value: /zed/points
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Style: Points
+      Size (Pixels): 3
+      Alpha: 1
+      Color Transformer: RGB8
+      Decay Time: 0
+    - Class: rviz_default_plugins/Image
+      Name: Depth image
+      Enabled: false
+      Topic:
+        Value: /zed/depth/image
+        Depth: 1
+        Durability Policy: Volatile
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Max Value: 3
+      Min Value: 0
+      Normalize Range: false
+    - Class: rviz_default_plugins/Grid
+      Name: Grid
+      Enabled: true
+      Cell Size: 0.5
+      Plane Cell Count: 20
+      Color: 160; 160; 164
+      Alpha: 0.35
+      Reference Frame: <Fixed Frame>
+    - Class: rviz_default_plugins/RobotModel
+      Name: RobotModel
+      Enabled: false
+      Description Source: Topic
+      Description Topic:
+        Value: /robot_description
+        Depth: 5
+        Durability Policy: Transient Local
+        Reliability Policy: Reliable
+        History Policy: Keep Last
+      Alpha: 1
+      Visual Enabled: true
+      Collision Enabled: false
+    - Class: rviz_default_plugins/TF
+      Name: TF
+      Enabled: false
+      Marker Scale: 0.3
+      Show Names: false
+      Show Axes: true
+      Show Arrows: false
+  Global Options:
+    Background Color: 48; 48; 48
+    Fixed Frame: world
+    Frame Rate: 30
+  Tools:
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+    - Class: rviz_default_plugins/FocusCamera
+  Views:
+    Current:
+      Class: rviz_default_plugins/Orbit
+      Name: Current View
+      Distance: 4
+      Focal Point:
+        X: 1.2
+        Y: 0
+        Z: 0.4
+      Pitch: 0.15
+      Yaw: 3.05
+      Target Frame: world
+  Value: true
+Window Geometry:
+  Height: 900
+  Width: 1400
+  Displays:
+    collapsed: false
+  Camera overlay:
+    collapsed: false

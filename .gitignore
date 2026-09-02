@@ -39,3 +39,7 @@ __pycache__
 dist/
 iphone_data/
 bag_logs/
+zed_data/
+# large ZED captures (keep local, never push)
+*.zip
+*.svo2

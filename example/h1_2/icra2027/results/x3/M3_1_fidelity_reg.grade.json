@@ -1,0 +1,14 @@
+{
+  "trajectory": "M3_1_fidelity_reg.csv",
+  "capture": "M3_1",
+  "condition": "fidelity_reg",
+  "log": "replay_M0_T1.csv",
+  "n_frames": 6037,
+  "frames_on_limit": 100,
+  "executed_out_of_limits": 0,
+  "mean_err_deg": 1.2123391606936809,
+  "p95_err_deg": 2.936159463404586,
+  "mean_err_at_limit_deg": 3.1131110326555462,
+  "mean_err_elsewhere_deg": 1.1803234646862386,
+  "ratio": 2.6375066884594167
+}

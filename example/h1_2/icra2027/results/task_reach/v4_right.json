@@ -1,0 +1,210 @@
+{
+  "ext_cap": 0.84,
+  "sides": [
+    "right"
+  ],
+  "per_capture": {
+    "right": [
+      {
+        "capture": "M1_1",
+        "step_cm": 16.86952588833309,
+        "residual_cm": 0.0,
+        "naive_over_cm": 3.846075573783303,
+        "within_tol": true,
+        "n_frames": 1116
+      },
+      {
+        "capture": "M1_2",
+        "step_cm": 16.332052633028006,
+        "residual_cm": 0.0,
+        "naive_over_cm": 4.13204001277192,
+        "within_tol": true,
+        "n_frames": 1252
+      },
+      {
+        "capture": "M1_3",
+        "step_cm": 18.930680447163432,
+        "residual_cm": 0.0,
+        "naive_over_cm": 0.0,
+        "within_tol": true,
+        "n_frames": 1207
+      },
+      {
+        "capture": "M1_4",
+        "step_cm": 17.39690306459819,
+        "residual_cm": 0.0,
+        "naive_over_cm": 2.4030933777284105,
+        "within_tol": true,
+        "n_frames": 1235
+      },
+      {
+        "capture": "M1_5",
+        "step_cm": 13.122858478898532,
+        "residual_cm": 0.0,
+        "naive_over_cm": 1.480686822054944,
+        "within_tol": true,
+        "n_frames": 1271
+      },
+      {
+        "capture": "M2_1",
+        "step_cm": 14.66027583554369,
+        "residual_cm": 3.8089680326973907,
+        "naive_over_cm": 8.9467337329587,
+        "within_tol": true,
+        "n_frames": 781
+      },
+      {
+        "capture": "M2_2",
+        "step_cm": 17.284794746003957,
+        "residual_cm": 4.0220078389245355,
+        "naive_over_cm": 8.94378132606547,
+        "within_tol": true,
+        "n_frames": 827
+      },
+      {
+        "capture": "M2_3",
+        "step_cm": 1.5471943077197645,
+        "residual_cm": 8.822054160665926,
+        "naive_over_cm": 8.916278881263262,
+        "within_tol": false,
+        "n_frames": 676
+      },
+      {
+        "capture": "M2_4",
+        "step_cm": 13.608294910155916,
+        "residual_cm": 5.742305888680088,
+        "naive_over_cm": 8.916355053908031,
+        "within_tol": true,
+        "n_frames": 710
+      },
+      {
+        "capture": "M2_5",
+        "step_cm": 0.08052139174988669,
+        "residual_cm": 8.916923762392681,
+        "naive_over_cm": 8.940257701692989,
+        "within_tol": false,
+        "n_frames": 717
+      },
+      {
+        "capture": "M3_1",
+        "step_cm": 12.952780587508467,
+        "residual_cm": 5.1450201811184755,
+        "naive_over_cm": 8.956084415811304,
+        "within_tol": true,
+        "n_frames": 986
+      },
+      {
+        "capture": "M3_2",
+        "step_cm": 12.252984863904008,
+        "residual_cm": 5.339873132578665,
+        "naive_over_cm": 8.953855964014002,
+        "within_tol": true,
+        "n_frames": 1050
+      },
+      {
+        "capture": "M3_3",
+        "step_cm": 14.010524563346054,
+        "residual_cm": 6.579634504999044,
+        "naive_over_cm": 8.951552303395294,
+        "within_tol": true,
+        "n_frames": 1090
+      },
+      {
+        "capture": "M3_4",
+        "step_cm": 15.588274620832538,
+        "residual_cm": 5.6995020505495315,
+        "naive_over_cm": 8.946118681452376,
+        "within_tol": true,
+        "n_frames": 1049
+      },
+      {
+        "capture": "M3_5",
+        "step_cm": 13.548749095256376,
+        "residual_cm": 5.901914002351982,
+        "naive_over_cm": 8.95288085595224,
+        "within_tol": true,
+        "n_frames": 1268
+      },
+      {
+        "capture": "M4_1",
+        "step_cm": 7.88472586749434,
+        "residual_cm": 8.15320315517678,
+        "naive_over_cm": 8.957800194921294,
+        "within_tol": false,
+        "n_frames": 334
+      },
+      {
+        "capture": "M4_2",
+        "step_cm": 11.124733487901095,
+        "residual_cm": 7.076810515789022,
+        "naive_over_cm": 8.93096077360952,
+        "within_tol": true,
+        "n_frames": 354
+      },
+      {
+        "capture": "M4_3",
+        "step_cm": 9.919019931191801,
+        "residual_cm": 7.627935549664322,
+        "naive_over_cm": 8.951026495552783,
+        "within_tol": true,
+        "n_frames": 341
+      },
+      {
+        "capture": "M4_4",
+        "step_cm": 14.16669699040083,
+        "residual_cm": 5.559666137763541,
+        "naive_over_cm": 8.95661416559742,
+        "within_tol": true,
+        "n_frames": 268
+      },
+      {
+        "capture": "M4_5",
+        "step_cm": 13.780487035769678,
+        "residual_cm": 6.210140260285691,
+        "naive_over_cm": 8.941301648632349,
+        "within_tol": true,
+        "n_frames": 427
+      },
+      {
+        "capture": "M5_1",
+        "step_cm": 4.971890221230832,
+        "residual_cm": 7.487545253268069,
+        "naive_over_cm": 8.919545723272615,
+        "within_tol": true,
+        "n_frames": 372
+      },
+      {
+        "capture": "M5_2",
+        "step_cm": 14.665277388379621,
+        "residual_cm": 1.630522783189825,
+        "naive_over_cm": 6.609538482075672,
+        "within_tol": true,
+        "n_frames": 404
+      },
+      {
+        "capture": "M5_3",
+        "step_cm": 10.49320426022473,
+        "residual_cm": 0.0,
+        "naive_over_cm": 5.9215474402204755,
+        "within_tol": true,
+        "n_frames": 377
+      },
+      {
+        "capture": "M5_4",
+        "step_cm": 16.21282753752099,
+        "residual_cm": 0.0,
+        "naive_over_cm": 6.263625034686471,
+        "within_tol": true,
+        "n_frames": 371
+      },
+      {
+        "capture": "M5_5",
+        "step_cm": 12.945364583788333,
+        "residual_cm": 4.135266780544756,
+        "naive_over_cm": 8.898400477383095,
+        "within_tol": true,
+        "n_frames": 431
+      }
+    ]
+  }
+}

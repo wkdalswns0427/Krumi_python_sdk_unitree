@@ -1,0 +1,55 @@
+{
+  "trajectory": "M2_1_taskdefined.csv",
+  "capture": "M2_1",
+  "condition": "taskdefined",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 4099,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.144366643801747,
+      "p95_err_deg": 2.5304537782504024,
+      "max_err_deg": 4.599934362428303,
+      "outcome": "control"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 4099,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.1130607659317013,
+      "p95_err_deg": 2.5181638335448477,
+      "max_err_deg": 4.842696580225231,
+      "outcome": "control"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 1982,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.252357048689558,
+      "p95_err_deg": 3.075305128741085,
+      "max_err_deg": 7.133954802953392,
+      "outcome": "control"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 1982,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.27049804302428,
+      "p95_err_deg": 3.003272874737236,
+      "max_err_deg": 5.638133887205351,
+      "outcome": "control"
+    }
+  ]
+}

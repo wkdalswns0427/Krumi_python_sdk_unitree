@@ -1,0 +1,16 @@
+[prep] M2_2     fidelity_reg   827 fr   R:   65 lim, marg 0.406, vel 10.59, torso +3.2cm  L:  151 lim, marg 0.106, vel  8.38, torso -6.7cm  -> M2_2_fidelity_reg.csv
+[prep] M2_3     fidelity_reg   676 fr   R:   17 lim, marg 0.350, vel 10.43, torso +2.0cm  L:   51 lim, marg 0.097, vel  4.48, torso -1.6cm  -> M2_3_fidelity_reg.csv
+[prep] M3_4     fidelity_reg  1049 fr   R:   83 lim, marg 0.371, vel 10.01, torso +2.0cm  L:   49 lim, marg 0.171, vel  6.79, torso +2.0cm  -> M3_4_fidelity_reg.csv
+[prep] M3_3     fidelity_reg  1090 fr   R:    0 lim, marg 0.396, vel  9.31, torso +2.0cm  L:    0 lim, marg 0.186, vel  5.04, torso +2.0cm  -> M3_3_fidelity_reg.csv
+
+[prep] wrote 4 trajectories to results/x3_C
+[prep] all conditions filtered identically at 2.0 Hz.
+[prep] peak velocity after filtering, rad/s:
+         M2_2_fidelity_reg      10.59   needs speed-scale 0.38
+         M2_3_fidelity_reg      10.43   needs speed-scale 0.38
+         M3_4_fidelity_reg      10.01   needs speed-scale 0.40
+         M3_3_fidelity_reg       9.31   needs speed-scale 0.43
+
+[prep] USE --speed-scale 0.38 FOR EVERY TRAJECTORY.
+[prep] One speed for all of them keeps the comparison clean, and it is set by the fastest condition.
+CDONE

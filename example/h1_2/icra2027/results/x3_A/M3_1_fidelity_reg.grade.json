@@ -1,0 +1,67 @@
+{
+  "trajectory": "M3_1_fidelity_reg.csv",
+  "capture": "M3_1",
+  "condition": "fidelity_reg",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 5823,
+      "frames_on_limit": 389,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.039140265784726,
+      "p95_err_deg": 2.430183299313535,
+      "max_err_deg": 5.673542678944448,
+      "mean_err_at_limit_deg": 1.0761348173642948,
+      "mean_err_elsewhere_deg": 1.03649196240518,
+      "ratio": 1.0382471417020191,
+      "outcome": "C"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 5823,
+      "frames_on_limit": 60,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 2.046522232728018,
+      "p95_err_deg": 7.145316556030838,
+      "max_err_deg": 27.020575026810597,
+      "mean_err_at_limit_deg": 1.132243146142924,
+      "mean_err_elsewhere_deg": 2.0560410155139115,
+      "ratio": 0.5506909334977044,
+      "outcome": "C"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 2666,
+      "frames_on_limit": 155,
+      "executed_out_of_limits": 112,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.3795786483359844,
+      "p95_err_deg": 4.044024926491597,
+      "max_err_deg": 10.6100897460121,
+      "mean_err_at_limit_deg": 1.1809519594338962,
+      "mean_err_elsewhere_deg": 1.3918395550583356,
+      "ratio": 0.8484828263013401,
+      "outcome": "A"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 2666,
+      "frames_on_limit": 24,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 2.2762977971739295,
+      "p95_err_deg": 8.075143978647871,
+      "max_err_deg": 27.07557897514316,
+      "mean_err_at_limit_deg": 2.7206542803165212,
+      "mean_err_elsewhere_deg": 2.2722612507714235,
+      "ratio": 1.1973333961457426,
+      "outcome": "C"
+    }
+  ]
+}

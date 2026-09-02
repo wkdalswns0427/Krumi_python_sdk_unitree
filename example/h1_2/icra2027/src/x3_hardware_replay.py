@@ -130,7 +130,8 @@ def prep(args):
                 rep_frames = 0
                 if args.repair_torso:
                     qs, need = repair_torso(x6f[sd], qs, sd,
-                                            margin=args.torso_margin)
+                                            margin=args.torso_margin,
+                                            max_deg=args.repair_max_deg)
                     rep_deg = float(np.degrees(need.max()))
                     rep_frames = int((need > 0).sum())
                 tors_after = min(torso_clearance(x6f[sd], q) for q in qs)
@@ -199,6 +200,18 @@ def prep(args):
                 v = sc_verdict(sc, args.sc_margin)
                 if v != "ok":
                     unsafe.append((os.path.basename(path), sc, v))
+            # Torso penetration is a separate failure from arm-to-arm, and the
+            # repair can run out of travel on a deeply adducted posture. Refuse
+            # rather than writing a trajectory that puts a limb in the chest.
+            for sd in sides:
+                if per[sd]["torso_after"] < args.torso_margin - 1e-6:
+                    ta = per[sd]["torso_after"]
+                    where = (f"{-ta*100:.1f} cm INSIDE the torso" if ta < 0
+                             else f"only {ta*100:.1f} cm clear of the torso")
+                    unsafe.append((os.path.basename(path), None,
+                                   f"{sd} arm {where} after repair, against a "
+                                   f"{args.torso_margin*100:.0f} cm margin. The "
+                                   f"{args.repair_max_deg:.0f} deg repair cap was reached."))
                 sc = {k: val for k, val in sc.items() if k != "per_frame"}
 
             side_json = os.path.splitext(path)[0] + ".limits.json"
@@ -241,12 +254,13 @@ def prep(args):
                   f"  -> {os.path.basename(path)}")
     if unsafe:
         print("\n" + "="*72)
-        print("SELF-COLLISION: these trajectories must not be replayed as they are")
+        print("UNSAFE: these trajectories must not be replayed as they are")
         print("="*72)
         for name, sc, v in unsafe:
             print(f"  {name:28} {v}")
-            print(f"      closest {sc['min_m']*100:5.1f} cm at frame {sc['argmin_frame']}"
-                  f" between {sc['pair']},  {sc['frames_under_margin']} frames inside the margin")
+            if sc is not None:
+                print(f"      closest {sc['min_m']*100:5.1f} cm at frame {sc['argmin_frame']}"
+                      f" between {sc['pair']},  {sc['frames_under_margin']} frames inside the margin")
         print("  The bar hand extends 0.20 m past the wrist along the forearm, and")
         print("  the segment model gives it no width, so the real gap is smaller.")
     print(f"\n[prep] wrote {len(written)} trajectories to {args.out_dir}")
@@ -476,6 +490,9 @@ def main():
     a.add_argument("--repair-torso", action="store_true",
                    help="abduct the shoulder just enough to lift the arm off the "
                         "trunk, applied identically to every condition")
+    a.add_argument("--repair-max-deg", type=float, default=25.0,
+                   help="most abduction the torso repair may add. Beyond about "
+                        "this the correction stops being the retargeted motion")
     a.add_argument("--torso-margin", type=float, default=0.02,
                    help="clearance to leave against the trunk, metres")
     a.add_argument("--hand-len", type=float, default=HAND_LEN_M,

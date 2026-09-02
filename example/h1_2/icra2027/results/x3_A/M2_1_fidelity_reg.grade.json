@@ -1,0 +1,67 @@
+{
+  "trajectory": "M2_1_fidelity_reg.csv",
+  "capture": "M2_1",
+  "condition": "fidelity_reg",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 4068,
+      "frames_on_limit": 220,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.1280846169165673,
+      "p95_err_deg": 2.5439555286926594,
+      "max_err_deg": 5.621632702705591,
+      "mean_err_at_limit_deg": 1.2572978694378363,
+      "mean_err_elsewhere_deg": 1.1206971648493427,
+      "ratio": 1.1218890427074981,
+      "outcome": "C"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 4068,
+      "frames_on_limit": 568,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.9512938523112437,
+      "p95_err_deg": 7.748148370599767,
+      "max_err_deg": 9.796317789587789,
+      "mean_err_at_limit_deg": 3.2816158472664285,
+      "mean_err_elsewhere_deg": 1.735401597129945,
+      "ratio": 1.890983535277169,
+      "outcome": "B"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 1966,
+      "frames_on_limit": 84,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.3674135184518785,
+      "p95_err_deg": 3.740764095106801,
+      "max_err_deg": 9.776722632994304,
+      "mean_err_at_limit_deg": 1.497261665870381,
+      "mean_err_elsewhere_deg": 1.3616179582057817,
+      "ratio": 1.0996195054913482,
+      "outcome": "C"
+    },
+    {
+      "side": "left",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 1966,
+      "frames_on_limit": 228,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 2.1137395702480717,
+      "p95_err_deg": 5.983816513741624,
+      "max_err_deg": 9.838831257986497,
+      "mean_err_at_limit_deg": 3.473693778470393,
+      "mean_err_elsewhere_deg": 1.9353336096757527,
+      "ratio": 1.794881131141198,
+      "outcome": "B"
+    }
+  ]
+}

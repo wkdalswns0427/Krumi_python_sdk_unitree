@@ -1,0 +1,19 @@
+[prep] M3_3     taskdefined   1090 fr   R:    0 lim, marg 0.448, vel  3.11, torso +4.8cm  L:    0 lim, marg 0.287, vel  3.57, torso +1.6cm  -> M3_3_taskdefined.csv
+[prep] M3_4     taskdefined   1049 fr   R:    0 lim, marg 0.455, vel  2.91, torso +4.8cm  L:    0 lim, marg 0.288, vel  3.28, torso +2.0cm  -> M3_4_taskdefined.csv
+
+========================================================================
+UNSAFE: these trajectories must not be replayed as they are
+========================================================================
+  M3_3_taskdefined.csv         left arm still 1.6 cm into the torso after repair, needs more than the 25 deg cap
+  The bar hand extends 0.20 m past the wrist along the forearm, and
+  the segment model gives it no width, so the real gap is smaller.
+
+[prep] wrote 2 trajectories to results/x3_C
+[prep] all conditions filtered identically at 2.0 Hz.
+[prep] peak velocity after filtering, rad/s:
+         M3_3_taskdefined        3.57   needs speed-scale 1.00
+         M3_4_taskdefined        3.28   needs speed-scale 1.00
+
+[prep] USE --speed-scale 1.00 FOR EVERY TRAJECTORY.
+[prep] One speed for all of them keeps the comparison clean, and it is set by the fastest condition.
+C2DONE

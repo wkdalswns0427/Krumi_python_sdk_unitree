@@ -37,7 +37,7 @@ Three guardrails keep the claim measured:
 | **C1b** | The remedy has a stated scope. Cross-body reach stays infeasible through a direction-driven mechanism that extension re-setting does not touch. | X6 on M5 |
 | **C2** (support) | Posture fidelity reduces clearance to the joint limits directly. With no limit avoidance it holds 0.149 less margin than a posture-free objective on the reaching arm. | X8 |
 | **C3** (support) | Published objectives sit on one monotonic axis of posture weight, and matching approach direction reduces clearance sharply on the reaching arm. | B3, X10 |
-| **C4** | Replica versus replacement. Fidelity is the goal in replica mode and a cost in replacement mode. | X7 |
+| ~~C4~~ | **Demoted 2026-09-02 to a discussion point.** Replica versus replacement is a reading of C1 to C3, not a separate claim. X7 was never built past a 62-line stub, so the contribution had no experiment behind it. Keeping it invited a reviewer to ask what supports it. | none |
 
 Side is a factor throughout, and it matters. Every effect below is strong on the reaching arm and weak or absent on the supporting arm.
 
@@ -282,12 +282,10 @@ Captures to run: M2 bricklaying and M3 lifting, the strongest pair at 5/5 contac
 | --- | --- | --- | --- | --- |
 | 12 in | 90.7 | **0/5** | 0/5 | 0/5 |
 | 16 in | 94.7 | **1/5** | 0/5 | 0/5 |
-| 18.3 in | 99.6 | 2/3 | 2/3 | 0/3 |
 | 20 in | 97.6 | **3/5** | 5/5 | 0/5 |
-| 22 in | 95.1 | 2/3 | 3/3 | 3/3 |
 | 24 in | 99.9 | **5/5** | 5/5 | 0/5 |
 
-Twenty-six repetitions across six pole distances, all frontal, both sessions combined. The earlier report of 1/5 then 0/5 then 5/5 then 5/5 was non-monotonic. **The onset is between 94 and 95 percent, not 90.** A graded rise is harder to dismiss as an artifact than a cliff, so this is the stronger result.
+Four pole distances, five repetitions each, the original 2026-08-29 session. The two extra frontal levels shot during the refilm are not used, since the refilm was dropped. The earlier report of 1/5 then 0/5 then 5/5 then 5/5 was non-monotonic. **The onset is between 94 and 95 percent, not 90.** A graded rise is harder to dismiss as an artifact than a cliff, so this is the stronger result.
 
 One loose end: at 22 in the task-defined target violates 3/3, breaking an otherwise clean record. Per-capture rates are 0.5 to 1.0 percent of frames, so these are marginal touches. Check before it goes in a table.
 
@@ -307,7 +305,7 @@ Swept on 25 captures per arm at the corrected 0.5588 m arm length. Contact is th
 
 **0.88 is the operating point, and 0.84 is reported alongside it because the sweep is what justifies the choice.**
 
-Re-running X6 on all twenty-five captures at 0.84 returns results identical to 0.88 on both arms, at 20, 17, 8 and 6 of 25 on the reaching arm and 13, 14, 14 and 5 on the supporting arm. The ceiling therefore has no effect on the limit-contact result over the range that matters. Its only measurable effect is on task attainment, which falls from 50 of 50 at 0.88 to 43 of 50 at 0.84.
+Re-running X6 on all twenty-five captures at 0.84 returns results identical to 0.88 on both arms. The reaching arm gives 20, 17, 8 and 6 of 25. The supporting arm gives 13, 14, 14 and 5. The ceiling therefore has no effect on the limit-contact result over the range that matters. Its only measurable effect is on task attainment, which falls from 50 of 50 at 0.88 to 43 of 50 at 0.84.
 
 So 0.88 is not a compromise between two costs. It matches the lower ceiling everywhere the paper makes a claim and loses nothing on reach, which is the straightforward reason to prefer it. The sweep is still worth reporting, because a parameter that turns out not to matter over its plausible range is a stronger position than one tuned to a single value.
 
@@ -324,6 +322,48 @@ Recorded so they are not repeated.
 **Rescaling the pole distances as fractions of arm length was wrong.** It put the near levels at 6.6 to 11 in, where 79 to 90 percent of frames are the arm at rest and forward reach is 4 to 11 cm. The original absolute distances of 12 to 24 in were better calibrated. Two new tools guard this: `check_sweep_span.py` reports rest fraction and forward-reach monotonicity per level, and `check_saturation.py` reports physically impossible frames.
 
 **A third finding worth carrying into the paper.** A hanging arm is nearly straight, scoring 0.90 to 0.97 on any extension measure. Captures that are mostly rest therefore report the resting posture rather than the reach. Extension must be measured on reach frames, meaning the top quartile of forward reach within each capture, not over whole captures.
+
+### 3d. Second subject, 2026-09-02: the motions replicate, the sweep does not
+
+S2 measures 19.5 in shoulder to wrist against S1's 22.0. Blocks A and B were captured. S3 was dropped.
+
+**M2 and M3 replicate S1 closely.** Five repetitions each, both arms, S1 in brackets.
+
+| | fidelity | fid-reg | task-centric | task-defined |
+| --- | --- | --- | --- | --- |
+| M2 right | 5/5 [5/5] | 4/5 [5/5] | 1/5 [2/5] | **0/5 [0/5]** |
+| M3 right | 5/5 [5/5] | 4/5 [5/5] | 1/5 [0/5] | **0/5 [0/5]** |
+| M2 left | 5/5 [5/5] | 5/5 [5/5] | 4/5 [5/5] | **1/5 [1/5]** |
+| M3 left | 1/5 [3/5] | 0/5 [4/5] | 1/5 [4/5] | **0/5 [0/5]** |
+
+A different demonstrator with a 2.5 in shorter arm reproduces the result on the two motions that carry it. Fidelity fails on nearly every repetition and the task-defined target holds, on both arms. C1 is no longer a single-subject finding.
+
+**S2's reach sweep saturated and is not reported.** Reconstructed extension reads 99.2 to 99.9 percent at every level on the reaching arm against S1's 90.7 to 99.9 span, so every level shows contact under every method and nothing is distinguishable. The cause is visible before normalization: six of twelve captures carry 3 to 23 percent physically impossible frames, which the conditioning step then clamps to full extension. The raw scale-free reach did span 0.69 to 0.87, so the demonstrator's reaches varied. The measurement of them did not survive.
+
+The near levels also ran 87 and 78 percent dead time, since the closest poles produced only 5 to 16 cm of forward reach. That is the same failure the S1 refilm showed at close poles, and the pole placement is the likely cause in both.
+
+**Consequence for the paper.** The sweep remains single-subject. The prediction that the onset sits at a fixed extension ratio across demonstrators is untested, and should be named as future work rather than claimed. The motion-level replication is reported in its place, which is the stronger of the two results in any case.
+
+### 3e. Bimanual self-collision, found 2026-09-02 during the X3 setup
+
+The robot carries a 0.20 m flat bar hand mounted at the wrist along the forearm axis. The wrist frame is therefore not the end of the arm, and clearance measured between wrist frames understates the real gap by up to 0.40 m when both forearms point inward, which is exactly what the lifting motion does.
+
+Measured on all ten M2 and M3 repetitions under both conditions, bars fitted:
+
+| condition | clears an 8 cm margin | worst case |
+| --- | --- | --- |
+| fidelity, regularized | 5 of 10 | 2.6 cm |
+| **task-defined** | **0 of 10** | **0.1 cm** |
+
+Six task-defined trajectories pass within 1.1 cm, and the offending pair is bar against bar in nearly every case. No capture had both conditions safe, so with bars fitted there was no valid paired comparison to replay at all.
+
+**This is a property of the method, not an accident of one capture.** Task-defined reduces reach magnitude while preserving direction, which on a bimanual motion pulls both hands toward the midline where they meet. The intervention that buys joint clearance costs hand clearance, consistently across every capture. It belongs in the limitations as a real boundary on the method for bimanual tasks with extended end-effectors.
+
+It also reframes an earlier observation. On the supporting arm, task-defined was the one condition that held up. It was pulling that arm inward, which helps its joints and hurts the pair.
+
+**Resolved for the replay by removing the bars.** With them off, the worst arm-to-arm clearance across all twenty trajectories is 16.4 cm, or 14.7 cm allowing a 5 cm mount stub. Every trajectory clears.
+
+`src/common/self_collision.py` models each arm as upper arm, forearm and hand bar, and `x3_hardware_replay.py prep` now refuses to pass a both-arm trajectory inside the margin. The segment model gives limbs no width, so reported clearance is optimistic.
 
 ### 4. Changes a claim if it comes out badly
 

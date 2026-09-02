@@ -1,0 +1,16 @@
+[prep] M2_1     fidelity_reg   781 fr   R:   65 lim, marg 0.440, vel 10.61, torso +2.0cm  L:  189 lim, marg 0.105, vel  5.53, torso +2.0cm  -> M2_1_fidelity_reg.csv
+[prep] M2_1     taskdefined    781 fr   R:    0 lim, marg 0.525, vel  3.44, torso +4.9cm  L:    0 lim, marg 0.241, vel  2.26, torso +2.0cm  -> M2_1_taskdefined.csv
+[prep] M3_1     fidelity_reg   986 fr   R:  110 lim, marg 0.314, vel  8.98, torso +2.0cm  L:   21 lim, marg 0.198, vel  6.15, torso +2.0cm  -> M3_1_fidelity_reg.csv
+[prep] M3_1     taskdefined    986 fr   R:    0 lim, marg 0.434, vel  3.92, torso +4.8cm  L:    0 lim, marg 0.294, vel  3.74, torso +2.0cm  -> M3_1_taskdefined.csv
+
+[prep] wrote 4 trajectories to results/x3_A
+[prep] all conditions filtered identically at 2.0 Hz.
+[prep] peak velocity after filtering, rad/s:
+         M2_1_fidelity_reg      10.61   needs speed-scale 0.38
+         M2_1_taskdefined        3.44   needs speed-scale 1.00
+         M3_1_fidelity_reg       8.98   needs speed-scale 0.45
+         M3_1_taskdefined        3.92   needs speed-scale 1.00
+
+[prep] USE --speed-scale 0.38 FOR EVERY TRAJECTORY.
+[prep] One speed for all of them keeps the comparison clean, and it is set by the fastest condition.
+A2DONE

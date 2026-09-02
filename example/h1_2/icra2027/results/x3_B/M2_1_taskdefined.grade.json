@@ -1,0 +1,31 @@
+{
+  "trajectory": "M2_1_taskdefined.csv",
+  "capture": "M2_1",
+  "condition": "taskdefined",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 4127,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.1202703735026103,
+      "p95_err_deg": 2.4970818514730087,
+      "max_err_deg": 4.134979111679646,
+      "outcome": "control"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 1976,
+      "frames_on_limit": 0,
+      "executed_out_of_limits": 0,
+      "commanded_out_of_limits": 0,
+      "mean_err_deg": 1.2576520739185015,
+      "p95_err_deg": 3.077187295098086,
+      "max_err_deg": 7.758421503866479,
+      "outcome": "control"
+    }
+  ]
+}

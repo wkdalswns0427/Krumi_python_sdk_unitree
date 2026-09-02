@@ -1,0 +1,81 @@
+{
+  "capture": "M3_1",
+  "condition": "taskdefined",
+  "side": "right",
+  "sides": [
+    "right"
+  ],
+  "joint_names": {
+    "right": [
+      "right_shoulder_pitch",
+      "right_shoulder_roll",
+      "right_shoulder_yaw",
+      "right_elbow"
+    ]
+  },
+  "lo": {
+    "right": [
+      -3.14,
+      -3.4,
+      -3.01,
+      -0.95
+    ]
+  },
+  "hi": {
+    "right": [
+      1.57,
+      0.38,
+      2.66,
+      3.18
+    ]
+  },
+  "n_frames": 986,
+  "touch_tol": 0.0001,
+  "lowpass_hz": 2.0,
+  "peak_vel_after_filter": 3.9245339177143457,
+  "recommended_speed_scale": 1.0,
+  "peak_vel_raw": {
+    "right": [
+      6.044538938381279,
+      6.1976599953089995,
+      3.888187476030188,
+      7.322398645180292
+    ]
+  },
+  "peak_vel_out": {
+    "right": [
+      2.919084733461779,
+      3.558827840081155,
+      1.4901752552134298,
+      3.9245339177143457
+    ]
+  },
+  "predicted_limit_frames": {
+    "right": []
+  },
+  "predicted_limit_times": {
+    "right": []
+  },
+  "offline": {
+    "right": {
+      "n_frames": 986,
+      "dt_median": 0.01666666666666572,
+      "flips_yaw": 1,
+      "tip_err_mean_mm": 0.05180517055415693,
+      "tip_err_p95_mm": 0.09352391767024092,
+      "limit_violation_frames": 0,
+      "any_violation": false,
+      "margin_mean": 0.43385198111802725,
+      "solver_ms_per_frame": 1.584841360661067
+    }
+  },
+  "self_collision": null,
+  "torso": {
+    "right": {
+      "before_m": 0.04835125264058937,
+      "after_m": 0.04835125264058937,
+      "repair_deg": 0.0,
+      "repair_frames": 0
+    }
+  }
+}

@@ -1,0 +1,49 @@
+  M1_1     n= 1292  rank3 100.0%  sigma_min med 0.1315  p05 0.1103
+  M1_2     n= 1368  rank3 100.0%  sigma_min med 0.1380  p05 0.1292
+  M1_3     n= 1321  rank3 100.0%  sigma_min med 0.1351  p05 0.1226
+  M1_4     n= 1310  rank3 100.0%  sigma_min med 0.1371  p05 0.1233
+  M1_5     n= 1330  rank3 100.0%  sigma_min med 0.1459  p05 0.1402
+  M2_1     n=  857  rank3 100.0%  sigma_min med 0.0649  p05 0.0039
+  M2_2     n=  976  rank3 100.0%  sigma_min med 0.0796  p05 0.0022
+  M2_3     n=  887  rank3 100.0%  sigma_min med 0.0881  p05 0.0023
+  M2_4     n=  955  rank3 100.0%  sigma_min med 0.0886  p05 0.0044
+  M2_5     n=  877  rank3 100.0%  sigma_min med 0.0714  p05 0.0024
+  M3_1     n= 1276  rank3 100.0%  sigma_min med 0.0785  p05 0.0461
+  M3_2     n= 1290  rank3 100.0%  sigma_min med 0.0756  p05 0.0283
+  M3_3     n= 1405  rank3 100.0%  sigma_min med 0.0857  p05 0.0329
+  M3_4     n= 1260  rank3 100.0%  sigma_min med 0.0831  p05 0.0328
+  M3_5     n= 1496  rank3 100.0%  sigma_min med 0.0714  p05 0.0316
+  M4_1     n=  392  rank3 100.0%  sigma_min med 0.0768  p05 0.0054
+  M4_2     n=  423  rank3 100.0%  sigma_min med 0.0896  p05 0.0031
+  M4_3     n=  398  rank3 100.0%  sigma_min med 0.0901  p05 0.0319
+  M4_4     n=  303  rank3 100.0%  sigma_min med 0.0923  p05 0.0179
+  M4_5     n=  498  rank3 100.0%  sigma_min med 0.1014  p05 0.0460
+  M5_1     n=  641  rank3 100.0%  sigma_min med 0.0724  p05 0.0568
+  M5_2     n=  687  rank3 100.0%  sigma_min med 0.0761  p05 0.0591
+  M5_3     n=  635  rank3 100.0%  sigma_min med 0.0765  p05 0.0581
+  M5_4     n=  686  rank3 100.0%  sigma_min med 0.0757  p05 0.0617
+  M5_5     n=  659  rank3 100.0%  sigma_min med 0.0825  p05 0.0507
+
+==================================================================
+CLAIM 1: the task leaves exactly one spare dimension
+==================================================================
+  rank 3, null dimension 1: 100.00% of frames
+  -> the dimension count holds on 100.00% of frames
+
+==================================================================
+CLAIM 2: that dimension vanishes near full extension
+==================================================================
+    extension band       n   sigma_min median       p05
+         0.00-0.80    4464             0.1510    0.1416
+         0.80-0.85    4063             0.1339    0.1245
+         0.85-0.90    2265             0.1109    0.0988
+         0.90-0.94    5454             0.0829    0.0733
+         0.94-0.97    4752             0.0642    0.0500
+         0.97-1.01    2224             0.0169    0.0012
+
+  correlation of sigma_min with extension: -0.957
+  sigma_min median falls 0.1510 -> 0.0169 across 0.00 to 1.01 extension (89% reduction)
+
+  VERDICT: supported. Redundancy contracts as extension rises.
+
+wrote results/redundancy/jacobian_left.json

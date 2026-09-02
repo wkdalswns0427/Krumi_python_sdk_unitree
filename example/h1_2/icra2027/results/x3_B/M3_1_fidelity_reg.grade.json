@@ -1,0 +1,37 @@
+{
+  "trajectory": "M3_1_fidelity_reg.csv",
+  "capture": "M3_1",
+  "condition": "fidelity_reg",
+  "runs": [
+    {
+      "side": "right",
+      "log": "replay_M0_T1.csv",
+      "n_frames": 5966,
+      "frames_on_limit": 393,
+      "executed_out_of_limits": 300,
+      "commanded_out_of_limits": 239,
+      "mean_err_deg": 1.106679361700603,
+      "p95_err_deg": 2.569778736519206,
+      "max_err_deg": 6.474136606080738,
+      "mean_err_at_limit_deg": 1.230904913035869,
+      "mean_err_elsewhere_deg": 1.0979191532536698,
+      "ratio": 1.1211252753794279,
+      "outcome": "A"
+    },
+    {
+      "side": "right",
+      "log": "replay_M0_T2.csv",
+      "n_frames": 2725,
+      "frames_on_limit": 156,
+      "executed_out_of_limits": 122,
+      "commanded_out_of_limits": 96,
+      "mean_err_deg": 1.4896393108918284,
+      "p95_err_deg": 4.355908772693103,
+      "max_err_deg": 10.386922684808633,
+      "mean_err_at_limit_deg": 1.3325115083272094,
+      "mean_err_elsewhere_deg": 1.4991807422659356,
+      "ratio": 0.8888264575178481,
+      "outcome": "A"
+    }
+  ]
+}

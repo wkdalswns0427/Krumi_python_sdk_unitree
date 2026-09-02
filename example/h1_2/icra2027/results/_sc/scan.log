@@ -1,0 +1,83 @@
+[prep] M2_1     fidelity_reg   781 fr   R:   65 lim, marg 0.440, vel 10.61  L:  263 lim, marg 0.105, vel  5.53  -> M2_1_fidelity_reg.csv
+[prep] M2_1     taskdefined    781 fr   R:    0 lim, marg 0.525, vel  3.44  L:    0 lim, marg 0.241, vel  2.33  -> M2_1_taskdefined.csv
+[prep] M2_2     fidelity_reg   827 fr   R:   65 lim, marg 0.406, vel 10.59  L:  306 lim, marg 0.106, vel  8.38  -> M2_2_fidelity_reg.csv
+[prep] M2_2     taskdefined    827 fr   R:    0 lim, marg 0.497, vel  3.25  L:    0 lim, marg 0.243, vel  3.15  -> M2_2_taskdefined.csv
+[prep] M2_3     fidelity_reg   676 fr   R:   18 lim, marg 0.350, vel 10.43  L:  235 lim, marg 0.097, vel  4.48  -> M2_3_fidelity_reg.csv
+[prep] M2_3     taskdefined    676 fr   R:    0 lim, marg 0.503, vel  3.30  L:    0 lim, marg 0.250, vel  2.19  -> M2_3_taskdefined.csv
+[prep] M2_4     fidelity_reg   710 fr   R:   40 lim, marg 0.287, vel 16.98  L:  246 lim, marg 0.089, vel  4.41  -> M2_4_fidelity_reg.csv
+[prep] M2_4     taskdefined    710 fr   R:    0 lim, marg 0.488, vel  2.95  L:    9 lim, marg 0.237, vel  2.62  -> M2_4_taskdefined.csv
+[prep] M2_5     fidelity_reg   717 fr   R:   22 lim, marg 0.407, vel 10.48  L:  231 lim, marg 0.123, vel  5.23  -> M2_5_fidelity_reg.csv
+[prep] M2_5     taskdefined    717 fr   R:    0 lim, marg 0.502, vel  3.45  L:    0 lim, marg 0.266, vel  3.79  -> M2_5_taskdefined.csv
+[prep] M3_1     fidelity_reg   986 fr   R:  116 lim, marg 0.314, vel  8.98  L:   28 lim, marg 0.198, vel  6.15  -> M3_1_fidelity_reg.csv
+[prep] M3_1     taskdefined    986 fr   R:    0 lim, marg 0.434, vel  3.92  L:    0 lim, marg 0.294, vel  3.74  -> M3_1_taskdefined.csv
+[prep] M3_2     fidelity_reg  1050 fr   R:   32 lim, marg 0.411, vel  9.37  L:   26 lim, marg 0.159, vel  7.03  -> M3_2_fidelity_reg.csv
+[prep] M3_2     taskdefined   1050 fr   R:    0 lim, marg 0.442, vel  3.24  L:    0 lim, marg 0.281, vel  4.01  -> M3_2_taskdefined.csv
+[prep] M3_3     fidelity_reg  1090 fr   R:    8 lim, marg 0.396, vel  9.31  L:    0 lim, marg 0.186, vel  5.04  -> M3_3_fidelity_reg.csv
+[prep] M3_3     taskdefined   1090 fr   R:    0 lim, marg 0.448, vel  3.11  L:    0 lim, marg 0.287, vel  3.57  -> M3_3_taskdefined.csv
+[prep] M3_4     fidelity_reg  1049 fr   R:   84 lim, marg 0.371, vel 10.01  L:   59 lim, marg 0.171, vel  6.79  -> M3_4_fidelity_reg.csv
+[prep] M3_4     taskdefined   1049 fr   R:    0 lim, marg 0.455, vel  2.91  L:    0 lim, marg 0.288, vel  3.28  -> M3_4_taskdefined.csv
+[prep] M3_5     fidelity_reg  1268 fr   R:    7 lim, marg 0.429, vel  7.28  L:   26 lim, marg 0.172, vel  7.14  -> M3_5_fidelity_reg.csv
+[prep] M3_5     taskdefined   1268 fr   R:    0 lim, marg 0.458, vel  3.00  L:    0 lim, marg 0.292, vel  3.20  -> M3_5_taskdefined.csv
+
+========================================================================
+SELF-COLLISION: these trajectories must not be replayed as they are
+========================================================================
+  M2_1_taskdefined.csv         COLLISION RISK, do not run
+      closest   1.1 cm at frame 747 between R.bar-L.bar,  18 frames inside the margin
+  M2_2_taskdefined.csv         COLLISION RISK, do not run
+      closest   0.5 cm at frame 615 between R.bar-L.bar,  21 frames inside the margin
+  M2_3_taskdefined.csv         UNSAFE, closest 4.3 cm is inside the 8 cm margin
+      closest   4.3 cm at frame 556 between R.bar-L.bar,  33 frames inside the margin
+  M2_4_taskdefined.csv         COLLISION RISK, do not run
+      closest   0.7 cm at frame 558 between R.fore-L.bar,  33 frames inside the margin
+  M2_5_taskdefined.csv         COLLISION RISK, do not run
+      closest   0.7 cm at frame 502 between R.bar-L.bar,  24 frames inside the margin
+  M3_1_fidelity_reg.csv        UNSAFE, closest 3.8 cm is inside the 8 cm margin
+      closest   3.8 cm at frame 501 between R.bar-L.bar,  10 frames inside the margin
+  M3_1_taskdefined.csv         COLLISION RISK, do not run
+      closest   0.1 cm at frame 623 between R.bar-L.bar,  39 frames inside the margin
+  M3_2_fidelity_reg.csv        UNSAFE, closest 7.1 cm is inside the 8 cm margin
+      closest   7.1 cm at frame 558 between R.bar-L.bar,  2 frames inside the margin
+  M3_2_taskdefined.csv         COLLISION RISK, do not run
+      closest   0.4 cm at frame 446 between R.bar-L.bar,  11 frames inside the margin
+  M3_3_fidelity_reg.csv        UNSAFE, closest 4.1 cm is inside the 8 cm margin
+      closest   4.1 cm at frame 997 between R.bar-L.bar,  11 frames inside the margin
+  M3_3_taskdefined.csv         UNSAFE, closest 4.1 cm is inside the 8 cm margin
+      closest   4.1 cm at frame 353 between R.bar-L.bar,  13 frames inside the margin
+  M3_4_fidelity_reg.csv        UNSAFE, closest 2.6 cm is inside the 8 cm margin
+      closest   2.6 cm at frame 124 between R.bar-L.bar,  19 frames inside the margin
+  M3_4_taskdefined.csv         UNSAFE, closest 5.3 cm is inside the 8 cm margin
+      closest   5.3 cm at frame 124 between R.bar-L.bar,  25 frames inside the margin
+  M3_5_fidelity_reg.csv        UNSAFE, closest 3.2 cm is inside the 8 cm margin
+      closest   3.2 cm at frame 83 between R.bar-L.bar,  12 frames inside the margin
+  M3_5_taskdefined.csv         UNSAFE, closest 3.5 cm is inside the 8 cm margin
+      closest   3.5 cm at frame 78 between R.bar-L.bar,  17 frames inside the margin
+  The bar hand extends 0.20 m past the wrist along the forearm, and
+  the segment model gives it no width, so the real gap is smaller.
+
+[prep] wrote 20 trajectories to results/x3_v3
+[prep] all conditions filtered identically at 2.0 Hz.
+[prep] peak velocity after filtering, rad/s:
+         M2_1_fidelity_reg      10.61   needs speed-scale 0.38
+         M2_1_taskdefined        3.44   needs speed-scale 1.00
+         M2_2_fidelity_reg      10.59   needs speed-scale 0.38
+         M2_2_taskdefined        3.25   needs speed-scale 1.00
+         M2_3_fidelity_reg      10.43   needs speed-scale 0.38
+         M2_3_taskdefined        3.30   needs speed-scale 1.00
+         M2_4_fidelity_reg      16.98   needs speed-scale 0.24
+         M2_4_taskdefined        2.95   needs speed-scale 1.00
+         M2_5_fidelity_reg      10.48   needs speed-scale 0.38
+         M2_5_taskdefined        3.79   needs speed-scale 1.00
+         M3_1_fidelity_reg       8.98   needs speed-scale 0.45
+         M3_1_taskdefined        3.92   needs speed-scale 1.00
+         M3_2_fidelity_reg       9.37   needs speed-scale 0.43
+         M3_2_taskdefined        4.01   needs speed-scale 1.00
+         M3_3_fidelity_reg       9.31   needs speed-scale 0.43
+         M3_3_taskdefined        3.57   needs speed-scale 1.00
+         M3_4_fidelity_reg      10.01   needs speed-scale 0.40
+         M3_4_taskdefined        3.28   needs speed-scale 1.00
+         M3_5_fidelity_reg       7.28   needs speed-scale 0.55
+         M3_5_taskdefined        3.20   needs speed-scale 1.00
+
+[prep] USE --speed-scale 0.24 FOR EVERY TRAJECTORY.
+[prep] One speed for all of them keeps the comparison clean, and it is set by the fastest condition.
